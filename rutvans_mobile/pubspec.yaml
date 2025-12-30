@@ -1,0 +1,61 @@
+name: rutvans_mobile
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_custom_clippers: ^2.1.0
+  flutter_stripe: ^12.0.2
+  http: ^1.4.0
+  shared_preferences: ^2.5.3
+  url_launcher: ^6.2.6
+  bcrypt: ^1.1.3
+  flutter_image_compress: ^2.4.0
+  qr: ^3.0.2
+  qr_flutter: ^4.1.0
+  geocoding: ^4.0.0
+  flutter_map: ^8.2.1
+  latlong2: ^0.9.1
+  flutter_map_cancellable_tile_provider: ^3.1.1
+  printing: ^5.11.0
+  pdf: ^3.11.3
+  image_picker: ^1.0.4
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  flutter_launcher_icons: ^0.13.1
+  flutter_lints: ^5.0.0
+  carousel_slider: ^5.1.1
+  fl_chart: ^1.0.0
+  intl: ^0.20.2
+  geolocator: ^11.0.0
+  dartz: ^0.10.1
+  mongo_dart: ^0.10.5
+  cached_network_image: ^3.2.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/iconLogo.png
+    - assets/images/seatIcon.png
+    - assets/images/shippingIcon.png
+    - assets/images/map.jpg
+    - assets/images/rentIcon.png
+    - assets/images/vanImage.jpg
+    - assets/images/driver1.jpg
+    - assets/images/banner1.jpg
+    - assets/images/banner2.jpg
+    - assets/images/banner3.jpg
+    - assets/images/randomUser.jpg
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"  # Ruta a tu imagen

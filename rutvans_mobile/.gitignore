@@ -1,0 +1,60 @@
+# Laravel (backend)
+backend/.env
+backend/vendor/
+backend/node_modules/
+backend/storage/logs/
+backend/storage/framework/cache/
+backend/storage/framework/sessions/
+backend/storage/framework/views/
+backend/bootstrap/cache/
+backend/public/hot
+backend/public/storage
+
+# Vue.js (frontend)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# VS Code
+.vscode/
+
+# IntelliJ/Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Flutter/Dart (móvil)
+.dart_tool/
+build/
+android/local.properties
+android/key.properties
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Runner/GeneratedPluginRegistrant.*
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+# General
+node_modules/
+*.log
+.DS_Store
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# MongoDB credentials (should be in environment variables, not in code)
+MONGO_USER=valenciaalmeidavictor
+MONGO_PASS=TuContraseñaSegura@123  # Cambia esto inmediatamente
+MONGO_DB=dbrutvans
+MONGO_CLUSTER=consultoria.2j6jkko.mongodb.net

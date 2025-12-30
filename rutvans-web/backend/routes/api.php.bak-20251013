@@ -1,0 +1,488 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Hash;
+
+/*
+|--------------------------------------------------------------------------
+| IMPORTS ORGANIZADOS POR SECCIONES
+|--------------------------------------------------------------------------
+*/
+
+// === CONTROLADORES GENERALES ===
+
+use App\Http\Controllers\EnvioController;
+use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\LocalidadesController;
+
+// === SUPER ADMIN CONTROLLERS ===
+use App\Http\Controllers\API\SuperAdmin\AdminController;
+use App\Http\Controllers\API\SuperAdmin\CompanyController;
+use App\Http\Controllers\API\SuperAdmin\SiteController;
+use App\Http\Controllers\API\SuperAdmin\UnitController;
+use App\Http\Controllers\API\SuperAdmin\CommentController;
+use App\Http\Controllers\API\SuperAdmin\ComplaintController;
+use App\Http\Controllers\API\SuperAdmin\FaqController;
+use App\Http\Controllers\API\SuperAdmin\FormController;
+use App\Http\Controllers\API\SuperAdmin\ProfileController;
+
+// === ADMIN CONTROLLERS ===
+use App\Http\Controllers\API\Admin\AuthAPIController;
+use App\Http\Controllers\API\Admin\DriverApiController;
+use App\Http\Controllers\API\Admin\CoordinateAPIController;
+use App\Http\Controllers\API\Admin\FinanzasController;
+use App\Http\Controllers\API\Admin\LocalidadesApiController;
+use App\Http\Controllers\API\Admin\PerfilApiController;
+use App\Http\Controllers\API\Admin\RouteController;
+use App\Http\Controllers\API\Admin\UnitApiController;
+use App\Http\Controllers\API\Admin\VentaApiController;
+use App\Http\Controllers\API\Admin\CashierAPIController;
+use App\Http\Controllers\API\Admin\SiteAPIController;
+use App\Http\Controllers\API\Admin\RouteUnitScheduleController;
+
+// === DRIVER CONTROLLERS ===
+use App\Http\Controllers\API\Driver\ApiChoferController;
+use App\Http\Controllers\API\Driver\ApiIncidenciaController;
+use App\Http\Controllers\API\Driver\ChoferEstadisticasDesempenoController;
+use App\Http\Controllers\API\Driver\ApiDriverUserController;
+use App\Http\Controllers\API\Driver\ApiRouteUnitScheduleApiController;
+use App\Http\Controllers\API\Driver\ApiFleteController;
+use App\Http\Controllers\API\Driver\ApiEntregasController;
+
+// === CLIENTES CONTROLLERS (CHRISTOPHER) ===
+use App\Http\Controllers\API\Clientes\UserController as ClienteUserController;
+use App\Http\Controllers\API\Clientes\TravelHistoryController;
+use App\Http\Controllers\API\Clientes\RouteUnitScheduleController as ClienteRouteUnitScheduleController;
+use App\Http\Controllers\API\Clientes\SaleController;
+use App\Http\Controllers\API\Clientes\RateController;
+use App\Http\Controllers\API\Clientes\ReservationController;
+use App\Http\Controllers\API\Clientes\PaymentController;
+use App\Http\Controllers\API\Clientes\UnitController as ClienteUnitController;
+use App\Http\Controllers\API\Clientes\ShipmentController;
+
+// === LIVEWIRE COMPONENTS (CHRISTOPHER) ===
+use App\Http\Controllers\API\Clientes\ViajeController;
+
+// === MODELS AND RESOURCES ===
+use App\Models\User;
+use App\Http\Resources\UserResource;
+
+Route::post('/mobile-login', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Credenciales inválidas'], 401);
+    }
+
+    if (!$user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Debes verificar tu email antes de iniciar sesión.'], 403);
+    }
+
+    $token = $user->createToken('mobile')->plainTextToken;
+
+    // Asegura que los roles estén cargados
+    $user->load('roles');
+
+    return response()->json([
+        'token' => $token,
+        'user' => new UserResource($user), // Usar Resource aquí
+    ]);
+});
+
+Route::post('/mobile-register', function (Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|string|min:6',
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+    // Asigna el rol 'client'
+    $user->assignRole('client');
+
+    $token = $user->createToken('mobile')->plainTextToken;
+
+    $user->load('roles');
+
+    return response()->json([
+        'token' => $token,
+        'user' => new UserResource($user),
+    ], 201);
+});
+
+use App\Livewire\ViajeComponent;
+
+// ViajeComponent
+Route::middleware('api')->group(function () {
+    Route::prefix('viajes')->group(function () {
+        Route::get('/', [ViajeComponent::class, 'index']);
+        Route::get('/asientos/{routeUnitId}', [ViajeComponent::class, 'asientos']);
+        Route::get('/tipos-tarifas', [ViajeComponent::class, 'tiposTarifas']);
+        Route::get('/info/{routeUnitId}', [ViajeComponent::class, 'getViajeInfo']);
+        Route::post('/tickets', [ViajeComponent::class, 'getTicket']);
+        Route::post('/sales', [ViajeComponent::class, 'storeSale']);
+    });
+});
+
+// ------------------------- RUTAS PARA APP MÓVIL ---------------------------------
+
+// use
+// use
+// use
+
+// Envíos
+Route::post('/shipment', [App\Http\Controllers\API\Clientes\ShipmentController::class, 'index']);
+
+// Usuarios
+Route::get('/user', [App\Http\Controllers\API\Clientes\UserController::class, 'getUser']);
+Route::get('/users', [App\Http\Controllers\API\Clientes\UserController::class, 'index']);
+Route::post('/users', [App\Http\Controllers\API\Clientes\UserController::class, 'store']);
+Route::post('/user/upload-photo', [App\Http\Controllers\API\Clientes\UserController::class, 'uploadPhoto']);
+Route::post('/login', [App\Http\Controllers\API\Clientes\UserController::class, 'login']);
+Route::patch('/user', [App\Http\Controllers\API\Clientes\UserController::class, 'updateUser']);
+
+// Historial de Viajes
+Route::get('/recent-trips', [App\Http\Controllers\API\Clientes\TravelHistoryController::class, 'getRecentTrips']);
+Route::patch('/travel-history/{id}', [App\Http\Controllers\API\Clientes\TravelHistoryController::class, 'updateTravelRating'])->middleware('auth:sanctum');
+
+// Ruta-Unidad-Horarios
+Route::get('/route-unit-schedules', [App\Http\Controllers\API\Clientes\RouteUnitScheduleController::class, 'getRouteUnitSchedules']);
+
+// Prueba
+Route::get('/ping', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'API funcionando en Laravel 12 con api.php 🧠🔥'
+    ]);
+});
+
+// Ventas
+Route::get('/sales/recent', [App\Http\Controllers\API\Clientes\SaleController::class, 'recentSales']); // Recent Sales (Boletos/Ventas)
+Route::post('/sales', [App\Http\Controllers\API\Clientes\SaleController::class, 'store']);
+
+// Rates (Tarifas)
+Route::get('/rates', [App\Http\Controllers\API\Clientes\RateController::class, 'index']);
+Route::get('/rates/{id}', [App\Http\Controllers\API\Clientes\RateController::class, 'show']);
+Route::post('/rates', [App\Http\Controllers\API\Clientes\RateController::class, 'store']);
+Route::put('/rates/{id}', [App\Http\Controllers\API\Clientes\RateController::class, 'update']);
+Route::delete('/rates/{id}', [App\Http\Controllers\API\Clientes\RateController::class, 'destroy']);
+
+// Reservaciones
+Route::post('/reservations', [App\Http\Controllers\API\Clientes\ReservationController::class, 'store']);
+Route::delete('/reservations/{id}', [App\Http\Controllers\API\Clientes\ReservationController::class, 'destroy']);
+
+// Payments
+Route::get('/payments', [App\Http\Controllers\API\Clientes\PaymentController::class, 'index']);
+Route::post('/payments', [App\Http\Controllers\API\Clientes\PaymentController::class, 'store']);
+
+// Unidades
+Route::get('/units/{unit}', [App\Http\Controllers\API\Clientes\UnitController::class, 'show']);
+Route::get('/units/{unit}/occupied-seats', [App\Http\Controllers\API\Clientes\UnitController::class, 'getOccupiedSeats']);
+
+Route::group(['prefix' => 'units'], function() {
+    Route::get('/{unit}/occupied-seats', [App\Http\Controllers\API\Clientes\ReservationController::class, 'getOccupiedSeats']);
+    Route::post('/{unit}/reserve', [App\Http\Controllers\API\Clientes\ReservationController::class, 'store']);
+    Route::delete('/{unit}/reservations/{id}', [App\Http\Controllers\API\Clientes\ReservationController::class, 'cancelReservation']);
+});
+
+
+
+// Rutas para freights (fletes)
+Route::prefix('freights')->middleware('auth:api')->group(function () {
+    Route::get('/', [App\Http\Controllers\API\Clientes\FreightController::class, 'index']); // Listar fletes por usuario
+    Route::post('/', [App\Http\Controllers\API\Clientes\FreightController::class, 'store']); // Crear nuevo flete
+    Route::get('/{id}', [App\Http\Controllers\API\Clientes\FreightController::class, 'show']); // Mostrar flete específico
+    Route::put('/{id}', [App\Http\Controllers\API\Clientes\FreightController::class, 'update']); // Actualizar flete
+    Route::delete('/{id}', [App\Http\Controllers\API\Clientes\FreightController::class, 'destroy']); // Cancelar flete
+});
+
+use App\Http\Controllers\API\SuperAdmin\AdminController as SAdminController;
+use App\Http\Controllers\API\SuperAdmin\CompanyController as SCompanyController;
+use App\Http\Controllers\API\SuperAdmin\SiteController as SSiteController;
+use App\Http\Controllers\API\SuperAdmin\UnitController as SUnitController;
+use App\Http\Controllers\API\SuperAdmin\CommentController as SCommentController;
+use App\Http\Controllers\API\SuperAdmin\ComplaintController as SComplaintController;
+use App\Http\Controllers\API\SuperAdmin\FaqController as SFaqController;
+use App\Http\Controllers\API\SuperAdmin\FormController as SFormController;
+use App\Http\Controllers\API\SuperAdmin\ProfileController as SProfileController;
+
+/*
+|--------------------------------------------------------------------------
+| Rutas publicas
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/envios', [EnvioController::class, 'apiIndex']);
+Route::get('/horarios', [HorarioController::class, 'apiIndex']);
+Route::get('/localidades', [LocalidadesController::class, 'apiIndex']);
+
+// FAQs publicas (landing, sin token)
+Route::get('/faqs', [FaqController::class, 'index']);
+
+// Comentarios publicos (listar)
+Route::get('/comments/public', [CommentController::class, 'publicIndex']);
+
+// Formularios (acceso mixto publico)
+Route::post('/forms', [FormController::class, 'store']);  // Envio de formularios
+Route::get('/forms', [FormController::class, 'index']);   // Listado publico
+
+// Comentarios (crear publico)
+Route::post('/comments', [CommentController::class, 'store']);
+
+/*
+|--------------------------------------------------------------------------
+| Rutas para usuarios autenticados (no admin)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->group(function () {
+    // Perfil del usuario autenticado
+    
+
+    // Quejas del usuario
+    Route::post('/complaints', [ComplaintController::class, 'store']);
+    Route::get('/complaints/user/{userId}', [ComplaintController::class, 'userComplaints']);
+    // Puntuar comentarios (accesibles para usuarios autenticados)
+    Route::post('/comments/{id}/upvote', [CommentController::class, 'rateUp']);
+    Route::post('/comments/{id}/downvote', [CommentController::class, 'rateDown']);
+    // Obtener comentarios con userVote
+    Route::get('/comments', [CommentController::class, 'index']);
+
+    // Formularios del usuario
+    Route::get('/forms/user', [SFormController::class, 'userForms']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Rutas para SUPER-ADMIN (privadas)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->prefix('super-admin')->group(function () {
+    // Dashboard y estadisticas
+    Route::get('/admin/stats', [AdminController::class, 'stats']);
+    Route::get('/admin/forms-monthly', [AdminController::class, 'formsMonthly']);
+    Route::get('/admin/sites-count', [AdminController::class, 'sitesCount']);
+    Route::get('/admin/units-count', [AdminController::class, 'unitsCount']);
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+
+    // Perfil de administrador
+    Route::get('/profile', [SProfileController::class, 'show']);
+    Route::put('/profile', [SProfileController::class, 'update']);
+    Route::put('/profile/password', [SProfileController::class, 'updatePassword']);
+    Route::post('/profile/photo', [SProfileController::class, 'updatePhoto']);
+
+    // Gestion de quejas
+    Route::get('/complaints/monthly', [ComplaintController::class, 'monthly']);
+    Route::get('/complaints', [ComplaintController::class, 'index']);
+    Route::get('/complaints/{id}', [ComplaintController::class, 'show']);
+    Route::put('/complaints/{id}', [ComplaintController::class, 'update']);
+    Route::delete('/complaints/{id}', [ComplaintController::class, 'destroy']);
+
+    // Gestion de FAQs (privadas para admin)
+    Route::get('/faqs', [FaqController::class, 'index']);
+    Route::post('/faqs', [FaqController::class, 'store']);
+    Route::get('/faqs/{id}', [FaqController::class, 'show']);
+    Route::put('/faqs/{id}', [FaqController::class, 'update']);
+    Route::delete('/faqs/{id}', [FaqController::class, 'destroy']);
+
+    // Gestion de comentarios (privado)
+    Route::get('/comments', [CommentController::class, 'index']);
+    Route::put('/comments/{id}', [CommentController::class, 'update']);
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
+    // Gestion de sitios y unidades
+    Route::get('/sites', [SiteController::class, 'index']);
+    Route::get('/sites/{id}', [SiteController::class, 'show']);
+    Route::get('/units', [UnitController::class, 'index']);
+    Route::get('/units/{id}', [UnitController::class, 'show']);
+
+    // Gestion de empresas
+    Route::get('/companies/stats', [CompanyController::class, 'stats']);
+    Route::get('/companies', [CompanyController::class, 'index']);
+    Route::get('/companies/{id}', [CompanyController::class, 'show']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Autenticacion movil
+|--------------------------------------------------------------------------
+*/
+Route::post('auth/mobile-login', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Credenciales invalidas'], 401);
+    }
+
+    if (!$user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Debes verificar tu email antes de iniciar sesion.'], 403);
+    }
+
+    $token = $user->createToken('mobile')->plainTextToken;
+
+    // Asegura que los roles esten cargados
+    $user->load('roles');
+
+    return response()->json([
+        'token' => $token,
+        'user' => new UserResource($user),
+    ]);
+});
+
+Route::post('auth/mobile-register', function (Request $request) {
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|string|min:6',
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
+
+    // Asigna el rol 'client'
+    $user->assignRole('client');
+
+    // Enviar email de verificacion
+    $user->sendEmailVerificationNotification();
+
+    // Ya no devolvemos el token, solo un mensaje de exito
+    return response()->json([
+        'success' => true,
+        'message' => 'Usuario registrado correctamente. Por favor, verifica tu correo electronico antes de iniciar sesion.',
+    ], 201);
+});
+
+// ==============================
+// RUTAS DE LA APP DEL ADMINISTRADOR
+// ==============================
+
+// Login (Publico)
+Route::post('/login_admin', [AuthAPIController::class, 'login_admin']);
+Route::get('/validate-token', [AuthAPIController::class, 'validateToken']);
+
+// Rutas protegidas por sanctum
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+
+    // Auth y perfil
+    Route::post('/logout', [AuthAPIController::class, 'logout']);
+
+    Route::get('/perfil', [PerfilApiController::class, 'perfil']);
+    Route::post('/actualizarPerfil', [PerfilApiController::class, 'actualizarPerfil']);
+
+    // Recursos principales
+    Route::apiResource('drivers', DriverApiController::class);
+    Route::apiResource('route-unit-schedules', RouteUnitScheduleController::class);
+    Route::apiResource('coordinates', CoordinateAPIController::class);
+    Route::apiResource('cashiers', CashierAPIController::class);
+
+    Route::apiResource('localities', LocalidadesApiController::class);
+    Route::apiResource('routes', RouteController::class);
+    Route::apiResource('units', UnitApiController::class);
+    Route::apiResource('ventas', VentaApiController::class);
+
+    Route::apiResource('sites', SiteAPIController::class);
+
+    // Finanzas
+    Route::prefix('finanzas')->group(function () {
+        Route::get('/balance-historico', [FinanzasController::class, 'balanceHistorico']);
+        Route::get('/resumen', [FinanzasController::class, 'resumen']);
+        Route::get('/top-rutas', [FinanzasController::class, 'topRutas']);
+        Route::get('/ventas-detalle', [FinanzasController::class, 'ventasDetalle']);
+        Route::get('/ventas-periodo', [FinanzasController::class, 'ventasPeriodo']);
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS PARA CONDUCTORES (DRIVERS)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('driver')->group(function () {
+    // Autenticacion
+    Route::post('/login', [ApiChoferController::class, 'login']);
+
+    // Gestion de incidencias
+    Route::get('/incident/{id}', [ApiIncidenciaController::class, 'show']);
+    Route::delete('/incident/delete/{id}', [ApiIncidenciaController::class, 'destroy']);
+
+    // Estadisticas de desempeno
+    Route::get('/performance/{driverId}', [ChoferEstadisticasDesempenoController::class, 'show']);
+
+    // Gestion de perfil de conductor
+    Route::get('/user/edit/{id}', [ApiDriverUserController::class, 'edit']);
+    Route::put('/user/update/{id}', [ApiDriverUserController::class, 'update']);
+
+    // Horarios de rutas
+    Route::get('/route-unit-schedules', [ApiRouteUnitScheduleApiController::class, 'index']);
+    Route::get('/route-unit-schedules/{id}', [ApiRouteUnitScheduleApiController::class, 'show']);
+
+    // Gestion de fletes
+    Route::get('/freights', [ApiFleteController::class, 'index']);
+    Route::get('/freights/{id}', [ApiFleteController::class, 'show']);
+    Route::put('/freights/update/{id}', [ApiFleteController::class, 'update']);
+    Route::get('/freights/edit/{id}', [ApiFleteController::class, 'edit']);
+
+    // Gestion de entregas
+    Route::get('/shipments/{id}', [ApiEntregasController::class, 'show']);
+    Route::get('/shipments', [ApiEntregasController::class, 'index']);
+    Route::put('/shipments/update/{id}', [ApiEntregasController::class, 'update']);
+});
+
+/*
+|--------------------------------------------------------------------------
+| RUTAS PARA CLIENTES (APP MOVIL) - CHRISTOPHER
+|--------------------------------------------------------------------------
+*/
+
+// === VIAJES COMPONENT (CHRISTOPHER) ===
+Route::middleware('api')->group(function () {
+    Route::prefix('viajes')->group(function () {
+        Route::get('/', [ViajeController::class, 'index']);
+        Route::get('/asientos/{routeUnitId}', [ViajeController::class, 'asientos']);
+        Route::get('/tipos-tarifas', [ViajeController::class, 'tiposTarifas']);
+        Route::get('/info/{routeUnitId}', [ViajeController::class, 'getViajeInfo']);
+        Route::post('/tickets', [ViajeController::class, 'getTicket']);
+        Route::post('/sales', [ViajeController::class, 'storeSale']);
+    });
+});
+
+// === RUTAS BASICAS DE CLIENTES ===
+Route::prefix('clientes')->group(function () {
+    // Autenticacion de clientes
+    Route::post('/login', [ClienteUserController::class, 'login']);
+
+    // Gestion de perfil basica
+    Route::get('/user', [ClienteUserController::class, 'getUser']);
+    Route::get('/users', [ClienteUserController::class, 'index']);
+    Route::post('/users', [ClienteUserController::class, 'store']);
+    Route::patch('/user', [ClienteUserController::class, 'updateUser']);
+    Route::post('/user/upload-photo', [ClienteUserController::class, 'uploadPhoto']);
+});
+
+// === RUTAS LEGACY DE CLIENTES (COMPATIBILIDAD) ===
+// Estas rutas mantienen la compatibilidad con versiones anteriores de la app movil
+
+// Usuarios (compatibilidad)
+Route::get('/user-cliente', [ClienteUserController::class, 'getUser']);
+Route::get('/users-cliente', [ClienteUserController::class, 'index']);
+Route::post('/users-cliente', [ClienteUserController::class, 'store']);
+Route::post('/user-cliente/upload-photo', [ClienteUserController::class, 'uploadPhoto']);
+Route::post('/login-cliente', [ClienteUserController::class, 'login']);
+Route::patch('/user-cliente', [ClienteUserController::class, 'updateUser']);

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>API Driver | RUTVANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark: #454545;
+            --primary: #FF6000;
+            --primary-dark: #e05500;
+            --secondary: #FFA559;
+            --light: #FFE6C7;
+            --lighter: #FFF4E8;
+            --white: #FFFFFF;
+            --gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-text-size-adjust: 100%;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+            flex: 1;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 1.2rem 0;
+            text-align: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(255, 96, 0, 0.2);
+            position: relative;
+            width: 100%;
+        }
+        
+        .header-content {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .version-badge {
+            background-color: var(--white);
+            color: var(--primary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 0.3rem;
+        }
+        
+        .api-base {
+            background-color: rgba(255, 166, 89, 0.1);
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px dashed var(--primary);
+            word-break: break-all;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .api-section {
+            background: var(--white);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--light);
+            width: 100%;
+        }
+        
+        .section-title {
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .endpoint-card {
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--white);
+            border-radius: 6px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            margin-right: 0.3rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .method.get {
+            background-color: #4CAF50;
+        }
+        
+        .method.post {
+            background-color: #2196F3;
+        }
+        
+        .method.put {
+            background-color: #FF9800;
+        }
+        
+        .method.delete {
+            background-color: #F44336;
+        }
+        
+        .method.patch {
+            background-color: #9C27B0;
+        }
+        
+        .endpoint-path {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: var(--dark);
+            font-size: 0.95rem;
+            word-break: break-all;
+        }
+        
+        .endpoint-description {
+            margin: 0.8rem 0 0.5rem;
+            color: var(--dark);
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+        
+        .endpoint-requires {
+            font-size: 0.85rem;
+            color: var(--dark-gray);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .endpoint-requires i {
+            margin-right: 5px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .features-list {
+            margin: 1rem 0;
+            padding-left: 0;
+            list-style-type: none;
+            display: block;
+        }
+        
+        .features-list li {
+            margin-bottom: 0.6rem;
+            position: relative;
+            padding: 0.6rem 0.6rem 0.6rem 2rem;
+            line-height: 1.4;
+            background-color: var(--gray);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .features-list li:before {
+            content: "•";
+            color: var(--primary);
+            position: absolute;
+            left: 0.8rem;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        
+        .example-section {
+            background-color: rgba(255, 166, 89, 0.05);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            border-left: 2px solid var(--secondary);
+            border: 1px solid #e2e8f0;
+            width: 100%;
+        }
+        
+        .example-title {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .example-title i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .example-url {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--dark);
+            word-break: break-all;
+            margin-bottom: 0.6rem;
+            display: block;
+            background-color: var(--gray);
+            padding: 0.6rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            border-left: 2px solid var(--primary);
+        }
+        
+        .json-container {
+            background-color: #1a1a1a;
+            color: var(--light);
+            padding: 0.8rem;
+            border-radius: 5px;
+            margin-top: 0.6rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.4;
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .json-key {
+            color: #FFA559;
+        }
+        
+        .json-string {
+            color: #4CAF50;
+        }
+        
+        .json-number {
+            color: #2196F3;
+        }
+        
+        .json-boolean {
+            color: #FF9800;
+        }
+        
+        .json-null {
+            color: #9E9E9E;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: auto;
+            padding: 1.2rem;
+            color: var(--dark);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--light);
+            background-color: var(--white);
+            width: 100%;
+        }
+        
+        /* Tablas responsivas */
+        .parameter-table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 1rem 0;
+        }
+        
+        .parameter-table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        
+        .parameter-table th {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.6rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .parameter-table td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .parameter-table tr:nth-child(even) {
+            background-color: var(--gray);
+        }
+        
+        .parameter-table .required {
+            color: #e53935;
+            font-weight: bold;
+        }
+        
+        .parameter-table .optional {
+            color: #43a047;
+        }
+        
+        /* Secciones colapsables */
+        .collapsible {
+            background-color: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 5px;
+            margin-bottom: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .collapsible i {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        .collapsible:hover {
+            background-color: var(--secondary);
+            color: var(--white);
+        }
+
+        .collapsible:after {
+            content: '\002B';
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+
+        .active:after {
+            content: "\2212";
+            color: var(--primary);
+        }
+
+        .content {
+            padding: 0 0.8rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: var(--white);
+            border-radius: 0 0 5px 5px;
+            width: 100%;
+        }
+
+        .collapsible-section {
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            width: 100%;
+        }
+        
+        /* Mejoras para móvil */
+        ul, ol {
+            padding-left: 1.2rem;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Botón de menú flotante para móvil */
+        .mobile-menu-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            border: none;
+            outline: none;
+        }
+        
+        /* Mejoras de accesibilidad */
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        a, button {
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="fas fa-book"></i> API - Perfil Chofer</h1>
+            <p class="subtitle">Endpoints para gestión de operaciones de conductores</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="api-base">https://rutvans.com/api/driver</div>
+        
+        <section class="api-section">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> Introducción</h2>
+            <p>La API Driver de RUTVANS permite a los conductores interactuar con el sistema para gestionar sus operaciones diarias.</p>
+            
+            <h3 style="margin: 1rem 0 0.8rem; color: var(--primary);">Características principales</h3>
+            <ul class="features-list">
+                <li><strong>Iniciar sesión</strong> - Autenticación segura</li>
+                <li><strong>Cerrar sesión</strong> - Terminar sesiones</li>
+                <li><strong>Gestión de perfil</strong> - Actualización de datos</li>
+                <li><strong>Rutas y servicios</strong> - Consulta de horarios</li>
+                <li><strong>Boletos y envíos</strong> - Gestión de entregas</li>
+                <li><strong>Incidencias</strong> - Reporte de problemas</li>
+                <li><strong>Notificaciones</strong> - Alertas importantes</li>
+                <li><strong>Estadísticas</strong> - Métricas de desempeño</li>
+            </ul>
+        </section>
+        
+        <section class="api-section">
+            <h2 class="section-title"><i class="fas fa-code"></i> Endpoints</h2>
+            
+            <!-- Autenticación -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-sign-in-alt"></i> Autenticación</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method post">POST</span>
+                            <span class="endpoint-path">/login</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Permite a los conductores iniciar sesión en el sistema.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title"><i class="fas fa-paper-plane"></i> Ejemplo de solicitud</div>
+                            <div class="example-url">POST https://rutvans.com/api/driver/login</div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>email</td>
+                                            <td>String</td>
+                                            <td class="required">Sí</td>
+                                            <td>Correo electrónico</td>
+                                        </tr>
+                                        <tr>
+                                            <td>password</td>
+                                            <td>String</td>
+                                            <td class="required">Sí</td>
+                                            <td>Contraseña</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>200</td>
+                                            <td>Autenticación exitosa</td>
+                                        </tr>
+                                        <tr>
+                                            <td>400</td>
+                                            <td>Datos inválidos</td>
+                                        </tr>
+                                        <tr>
+                                            <td>401</td>
+                                            <td>Credenciales incorrectas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Incidencias -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-exclamation-triangle"></i> Incidencias</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/incident/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene los detalles de una incidencia específica reportada por el chofer.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/incident/1</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">data</span>": [
+    {
+      "<span class="json-key">id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">details</span>": <span class="json-string">"hay algo"</span>,
+      "<span class="json-key">user_id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">category</span>": <span class="json-string">"Paso algo en carretera"</span>,
+      "<span class="json-key">image</span>": <span class="json-boolean">null</span>,
+      "<span class="json-key">urgency</span>": <span class="json-string">"Alta muy alta"</span>,
+      "<span class="json-key">updated_at</span>": <span class="json-string">"2025-08-13 16:48:48"</span>,
+      "<span class="json-key">created_at</span>": <span class="json-string">"2025-08-13 16:48:51"</span>
+    }
+  ]
+}
+                            </div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>id</td>
+                                            <td>Integer</td>
+                                            <td>ID de la incidencia a consultar</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>200</td>
+                                            <td>OK - Incidencia obtenida correctamente</td>
+                                        </tr>
+                                        <tr>
+                                            <td>404</td>
+                                            <td>Not Found - Incidencia no encontrada</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method delete">DELETE</span>
+                            <span class="endpoint-path">/incident/delete/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Elimina una incidencia reportada por el chofer. Solo disponible para incidencias en estado "pendiente".
+                        </div>
+                        
+                        <div class="parameter-table-container">
+                            <table class="parameter-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>200</td>
+                                        <td>OK - Incidencia eliminada correctamente</td>
+                                    </tr>
+                                    <tr>
+                                        <td>403</td>
+                                        <td>Forbidden - No tiene permisos para eliminar</td>
+                                    </tr>
+                                    <tr>
+                                        <td>404</td>
+                                        <td>Not Found - Incidencia no encontrada</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Editar perfil -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-user-edit"></i> Gestión de Perfil</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/user/edit/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene los datos actuales del perfil del chofer para su edición.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/user/edit/1</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">data</span>": {
+    "<span class="json-key">id</span>": <span class="json-number">1</span>,
+    "<span class="json-key">name</span>": <span class="json-string">"Carlos Arjona"</span>,
+    "<span class="json-key">email</span>": <span class="json-string">"carlos@gmail.com"</span>,
+    "<span class="json-key">phone</span>": <span class="json-string">"+52 55-1234-5678"</span>
+  }
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method put">PUT</span>
+                            <span class="endpoint-path">/user/update/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Actualiza la información del perfil del chofer. Se pueden enviar los parámetros como query parameters o en el cuerpo de la solicitud en formato JSON.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">PUT https://rutvans.com/api/driver/user/update/1?name=Carlos%20Vilarta%20M</div>
+                            
+                            <div class="example-title">Headers requeridos</div>
+                            <div class="json-container">
+| <span class="json-key">Header</span>       | <span class="json-key">Valor</span>               |
+|---------------------|-----------------------|
+| <span class="json-string">Authorization</span> | <span class="json-string">Bearer [token]</span>  |
+| <span class="json-string">Content-Type</span>  | <span class="json-string">application/json</span> |
+                            </div>
+                            
+                            <div class="example-title">Parámetros aceptados</div>
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>name</td>
+                                            <td>String</td>
+                                            <td>Opcional</td>
+                                            <td>Nombre completo del chofer</td>
+                                        </tr>
+                                        <tr>
+                                            <td>email</td>
+                                            <td>String</td>
+                                            <td>Opcional</td>
+                                            <td>Correo electrónico</td>
+                                        </tr>
+                                        <tr>
+                                            <td>phone</td>
+                                            <td>String</td>
+                                            <td>Opcional</td>
+                                            <td>Teléfono en formato internacional</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="example-title">Ejemplo de respuesta exitosa</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">message</span>": <span class="json-string">"Perfil actualizado correctamente"</span>,
+  "<span class="json-key">data</span>": {
+    "<span class="json-key">id</span>": <span class="json-number">1</span>,
+    "<span class="json-key">name</span>": <span class="json-string">"Carlos Vilarta M"</span>,
+    "<span class="json-key">email</span>": <span class="json-string">"carlos@gmail.com"</span>,
+    "<span class="json-key">phone</span>": <span class="json-string">"+52 55-1234-5678"</span>
+  }
+}
+                            </div>
+                            
+                            <div class="example-title">Posibles códigos de respuesta</div>
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>200</td>
+                                            <td>OK - Actualización exitosa</td>
+                                        </tr>
+                                        <tr>
+                                            <td>400</td>
+                                            <td>Bad Request - Datos inválidos o faltantes</td>
+                                        </tr>
+                                        <tr>
+                                            <td>401</td>
+                                            <td>Unauthorized - Token inválido o faltante</td>
+                                        </tr>
+                                        <tr>
+                                            <td>404</td>
+                                            <td>Not Found - Usuario no encontrado</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estadísticas de desempeño -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-chart-line"></i> Estadísticas</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/performance/{driverId}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene las estadísticas completas de desempeño del chofer.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">data</span>": {
+    "<span class="json-key">id</span>": <span class="json-number">1</span>,
+    "<span class="json-key">driver_id</span>": <span class="json-number">1</span>,
+    "<span class="json-key">last_updated</span>": <span class="json-string">"2025-06-22 00:00:00"</span>,
+    "<span class="json-key">total_trips_completed</span>": <span class="json-number">248</span>,
+    "<span class="json-key">driver_rating</span>": <span class="json-number">9.8</span>,
+    "<span class="json-key">punctuality_percentage</span>": <span class="json-number">92</span>,
+    "<span class="json-key">orders_delivered</span>": <span class="json-number">280</span>,
+    "<span class="json-key">orders_cancelled</span>": <span class="json-number">10</span>,
+    "<span class="json-key">average_trip_time_minutes</span>": <span class="json-number">32</span>,
+    "<span class="json-key">average_trip_distance_km</span>": <span class="json-number">12.4</span>,
+    "<span class="json-key">active_hours_this_month</span>": <span class="json-number">156</span>,
+    "<span class="json-key">recommendations_received</span>": <span class="json-number">50</span>,
+    "<span class="json-key">reports_received</span>": <span class="json-number">4</span>,
+    "<span class="json-key">weekly_trips_completed</span>": [
+      { "<span class="json-key">day</span>": <span class="json-string">"Lun"</span>, "<span class="json-key">count</span>": <span class="json-number">10</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Mar"</span>, "<span class="json-key">count</span>": <span class="json-number">20</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Mie"</span>, "<span class="json-key">count</span>": <span class="json-number">30</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Jue"</span>, "<span class="json-key">count</span>": <span class="json-number">40</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Vie"</span>, "<span class="json-key">count</span>": <span class="json-number">50</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Sáb"</span>, "<span class="json-key">count</span>": <span class="json-number">60</span> },
+      { "<span class="json-key">day</span>": <span class="json-string">"Dom"</span>, "<span class="json-key">count</span>": <span class="json-number">100</span> }
+    ]
+  }
+}
+                            </div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>driverId</td>
+                                            <td>Integer</td>
+                                            <td>ID del conductor</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Historial de rutas -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-route"></i> Rutas y Horarios</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/route-unit-schedules</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene el listado completo de horarios de rutas asignadas al chofer.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/route-unit-schedules</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">data</span>": [
+    {
+      "<span class="json-key">id</span>": <span class="json-number">28</span>,
+      "<span class="json-key">route_unit_id</span>": <span class="json-number">4</span>,
+      "<span class="json-key">schedule_date</span>": <span class="json-string">"2025-08-13"</span>,
+      "<span class="json-key">schedule_time</span>": <span class="json-string">"00:00:45"</span>,
+      "<span class="json-key">status</span>": <span class="json-string">"Activo"</span>,
+      "<span class="json-key">created_at</span>": <span class="json-string">"2025-08-13T19:06:33.000000Z"</span>,
+      "<span class="json-key">updated_at</span>": <span class="json-string">"2025-08-13T19:06:33.000000Z"</span>,
+      "<span class="json-key">route_unit</span>": <span class="json-boolean">null</span>
+    }
+  ]
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/route-unit-schedules/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene los detalles específicos de un horario de ruta particular.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/route-unit-schedules/1</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">success</span>": <span class="json-boolean">true</span>,
+  "<span class="json-key">data</span>": {
+    "<span class="json-key">id</span>": <span class="json-number">28</span>,
+    "<span class="json-key">route_unit_id</span>": <span class="json-number">4</span>,
+    "<span class="json-key">schedule_date</span>": <span class="json-string">"2025-08-13"</span>,
+    "<span class="json-key">schedule_time</span>": <span class="json-string">"00:00:45"</span>,
+    "<span class="json-key">status</span>": <span class="json-string">"Activo"</span>,
+    "<span class="json-key">created_at</span>": <span class="json-string">"2025-08-13T19:06:33.000000Z"</span>,
+    "<span class="json-key">updated_at</span>": <span class="json-string">"2025-08-13T19:06:33.000000Z"</span>
+  }
+}
+                            </div>
+                            
+                            <div class="example-title">Descripción de campos</div>
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Campo</th>
+                                            <th>Tipo</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>schedule_date</td>
+                                            <td>Date</td>
+                                            <td>Fecha programada para la ruta (YYYY-MM-DD)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>schedule_time</td>
+                                            <td>Time</td>
+                                            <td>Hora de inicio programada (HH:MM:SS)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>status</td>
+                                            <td>String</td>
+                                            <td>Estado actual (Activo, Completado, Cancelado)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fletes -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-truck"></i> Gestión de Fletes</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/freights</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene el listado de todos los fletes asignados al chofer.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">flete</span>": [
+    {
+      "<span class="json-key">id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">folio</span>": <span class="json-string">"002"</span>,
+      "<span class="json-key">service_id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">start_date</span>": <span class="json-string">"2025-08-16"</span>,
+      "<span class="json-key">end_date</span>": <span class="json-string">"2025-08-16"</span>,
+      "<span class="json-key">start_time</span>": <span class="json-string">"10:30:00"</span>,
+      "<span class="json-key">end_time</span>": <span class="json-string">"16:30:00"</span>,
+      "<span class="json-key">status</span>": <span class="json-string">"pendiente"</span>,
+      "<span class="json-key">amount</span>": <span class="json-string">"350.00"</span>,
+      "<span class="json-key">name</span>": <span class="json-string">"Marcos"</span>,
+      "<span class="json-key">origin</span>": <span class="json-string">"Merida"</span>,
+      "<span class="json-key">driver_id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">destination</span>": <span class="json-string">"Kopoma"</span>,
+      "<span class="json-key">number_people</span>": <span class="json-number">14</span>,
+      "<span class="json-key">created_at</span>": <span class="json-string">"2025-08-13 19:01:44"</span>,
+      "<span class="json-key">updated_at</span>": <span class="json-string">"2025-08-14 22:10:57"</span>
+    }
+  ]
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/freights/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene los detalles completos de un flete específico.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/freights/1</div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method put">PUT</span>
+                            <span class="endpoint-path">/freights/update/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Actualiza el estado básico de un flete (ej: pendiente → en_progreso).
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">PUT https://rutvans.com/api/driver/freights/update/1?status=en_progreso</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">message</span>": <span class="json-string">"Flete updated successfully"</span>
+}
+                            </div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>status</td>
+                                            <td>String</td>
+                                            <td>Sí</td>
+                                            <td>Nuevo estado del flete</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method put">PUT</span>
+                            <span class="endpoint-path">/freights/edit/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Modifica detalles específicos del flete (fechas, horarios, detalles).
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">PUT https://rutvans.com/api/driver/freights/edit/1?folio=003</div>
+                            
+                            <div class="parameter-table-container">
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>folio</td>
+                                            <td>String</td>
+                                            <td>No</td>
+                                            <td>Nuevo folio del flete</td>
+                                        </tr>
+                                        <tr>
+                                            <td>start_date</td>
+                                            <td>Date</td>
+                                            <td>No</td>
+                                            <td>Nueva fecha de inicio (YYYY-MM-DD)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>start_time</td>
+                                            <td>Time</td>
+                                            <td>No</td>
+                                            <td>Nueva hora de inicio (HH:MM:SS)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Entregas -->
+            <div class="collapsible-section">
+                <button type="button" class="collapsible"><i class="fas fa-boxes"></i> Gestión de Entregas</button>
+                <div class="content">
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/shipments</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene el listado de todas las entregas asignadas al chofer.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/shipments</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">shipments</span>": [
+    {
+      "<span class="json-key">id</span>": <span class="json-number">1</span>,
+      "<span class="json-key">folio</span>": <span class="json-string">"002"</span>,
+      "<span class="json-key">route_unit_id</span>": <span class="json-number">4</span>,
+      "<span class="json-key">service_id</span>": <span class="json-number">2</span>,
+      "<span class="json-key">sender_name</span>": <span class="json-string">"Eduardo Canul"</span>,
+      "<span class="json-key">receiver_name</span>": <span class="json-string">"Julia Noh"</span>,
+      "<span class="json-key">package_description</span>": <span class="json-string">"Bien, todo bien jj"</span>,
+      "<span class="json-key">package_image</span>": <span class="json-boolean">null</span>,
+      "<span class="json-key">status</span>": <span class="json-string">"Pendiente"</span>,
+      "<span class="json-key">amount</span>": <span class="json-string">"1.00"</span>,
+      "<span class="json-key">created_at</span>": <span class="json-string">"2025-08-13 19:17:26"</span>,
+      "<span class="json-key">updated_at</span>": <span class="json-string">"2025-08-14 23:37:44"</span>,
+      "<span class="json-key">user_id</span>": <span class="json-boolean">null</span>,
+      "<span class="json-key">locality</span>": <span class="json-string">"Merida"</span>
+    }
+  ]
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method get">GET</span>
+                            <span class="endpoint-path">/shipments/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Obtiene los detalles completos de una entrega específica.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">GET https://rutvans.com/api/driver/shipments/1</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">shipments</span>": {
+    "<span class="json-key">id</span>": <span class="json-number">1</span>,
+    "<span class="json-key">folio</span>": <span class="json-string">"002"</span>,
+    "<span class="json-key">route_unit_id</span>": <span class="json-number">4</span>,
+    "<span class="json-key">sender_name</span>": <span class="json-string">"Eduardo Canul"</span>,
+    "<span class="json-key">receiver_name</span>": <span class="json-string">"Julia Noh"</span>,
+    "<span class="json-key">status</span>": <span class="json-string">"Pendiente"</span>,
+    "<span class="json-key">locality</span>": <span class="json-string">"Merida"</span>
+  }
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint-card">
+                        <div>
+                            <span class="method put">PUT</span>
+                            <span class="endpoint-path">/shipments/update/{id}</span>
+                        </div>
+                        <div class="endpoint-description">
+                            Actualiza el estado o información de una entrega específica.
+                        </div>
+                        
+                        <div class="example-section">
+                            <div class="example-title">Ejemplo de solicitud</div>
+                            <div class="example-url">PUT https://rutvans.com/api/driver/shipments/update/1?sender_name=Eduardo%20Canul%20Pot</div>
+                            
+                            <div class="example-title">Ejemplo de respuesta</div>
+                            <div class="json-container">
+{
+  "<span class="json-key">message</span>": <span class="json-string">"shipments updated successfully"</span>
+}
+                            </div>
+                            
+                            <div class="example-title">Campos actualizables</div>
+                            <ul style="margin-top: 10px; padding-left: 20px; font-size: 0.9rem;">
+                                <li><strong>status</strong>: Cambiar estado (Pendiente, En camino, Entregado, etc.)</li>
+                                <li><strong>sender_name</strong>: Nombre del remitente</li>
+                                <li><strong>receiver_name</strong>: Nombre del destinatario</li>
+                                <li><strong>package_description</strong>: Descripción del paquete</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>© 2025 RUTVANS - API Perfil Chofer</p>
+        </footer>
+    </div>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapsibles = document.getElementsByClassName("collapsible");
+            
+            for (let i = 0; i < collapsibles.length; i++) {
+                collapsibles[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    const content = this.nextElementSibling;
+                    
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    } 
+                });
+                
+                // Abrir la primera sección por defecto
+                if (i === 0) {
+                    collapsibles[i].classList.add("active");
+                    const content = collapsibles[i].nextElementSibling;
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            }
+            
+            // Botón de menú móvil
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            mobileMenuBtn.addEventListener('click', function() {
+                // Desplazarse al inicio
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

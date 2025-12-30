@@ -1,0 +1,67 @@
+# ==========================
+# IDEs y editores
+# ==========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ==========================
+# Flutter
+# ==========================
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# ==========================
+# Laravel
+# ==========================
+vendor/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+storage/*.key
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+.env
+.env.local
+.env.production
+
+# ==========================
+# Vue / Frontend Node
+# ==========================
+dist/
+*.log
+
+# ==========================
+# Database
+# ==========================
+*.sql
+*.sqlite
+*.db
+
+# ==========================
+# System / OS
+# ==========================
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.bak
+*.backup
+
+# ==========================
+# Temp
+# ==========================
+tmp/
+temp/
+*.tmp
+*.temp
+logs/

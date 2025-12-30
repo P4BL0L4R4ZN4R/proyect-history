@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Documentación API - Panel Administrador</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #2f3640;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        details {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        summary {
+            background: #40739e;
+            color: white;
+            padding: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        summary:hover {
+            background: #487eb0;
+        }
+
+        .content {
+            padding: 15px;
+            background: white;
+        }
+
+        code {
+            background: #f1f2f6;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: #e84118;
+        }
+
+        pre {
+            background: #f1f2f6;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #dcdde1;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f6fa;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        /* Sección general de headers */
+        .auth-info {
+            background: #dcdde1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>📘 Documentación API - Panel Administrador</h1>
+        <p>Endpoints protegidos con Sanctum y públicos</p>
+    </header>
+
+    <div class="container">
+
+        <section class="auth-info">
+            <h2>🔐 Autenticación y Headers Comunes</h2>
+            <p>Las rutas protegidas requieren enviar los siguientes encabezados HTTP en <code>Authorization</code> y
+                <code>Accept</code> para todas las peticiones:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Header</th>
+                        <th>Valor</th>
+                        <th>Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>Authorization</code></td>
+                        <td><code>Bearer &lt;token&gt;</code></td>
+                        <td>Token de autenticación obtenido tras hacer login</td>
+                    </tr>
+                    <tr>
+                        <td><code>Accept</code></td>
+                        <td><code>application/json</code></td>
+                        <td>Indica que se espera respuesta en formato JSON</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Ejemplo general con cURL</h3>
+            <pre>curl -X MÉTODO "https://tuservidor.com/ENDPOINT" \
+-H "Authorization: Bearer TU_TOKEN_AQUI" \
+-H "Accept: application/json" \
+[--data '{ "param": "valor" }']</pre>
+            <p><i>Reemplaza <code>MÉTODO</code> y <code>ENDPOINT</code> según la operación que realices.</i></p>
+        </section>
+
+       <details>
+  <summary>API de Autenticación</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Endpoints para manejar la autenticación de usuarios, incluyendo login, logout, validación de token y obtención de datos del usuario.</p>
+
+    <h4>1. Login</h4>
+    <p><b>POST /api/login_admin</b></p>
+    <p>Autentica a un usuario y devuelve un token de acceso.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>POST https://rutvans.com/api/login_admin
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "password123"
+}</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "token": "1|XyZ123...",
+  "user": {
+    "id": 1,
+    "name": "Admin Ejemplo",
+    "email": "admin@example.com",
+    "roles": [
+      {
+        "id": 1,
+        "name": "admin"
+      }
+    ],
+    "companies": [
+      {
+        "id": 1,
+        "name": "Compañía Principal",
+        "role": "admin",
+        "status": "active"
+      }
+    ]
+  }
+}</pre>
+
+    <h5>Errores comunes:</h5>
+    <ul>
+      <li><b>401 Unauthorized:</b> Credenciales incorrectas</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>2. Obtener usuario autenticado</h4>
+    <p><b>GET /api/user</b></p>
+    <p>Obtiene los datos del usuario autenticado.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/user
+Authorization: Bearer 1|XyZ123...</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "id": 1,
+  "name": "Admin Ejemplo",
+  "email": "admin@example.com",
+  "profile_photo_url": "https://rutvans.com/storage/profile-photos/foto.jpg",
+  "roles": [
+    {
+      "id": 1,
+      "name": "admin"
+    }
+  ],
+  "companies": [
+    {
+      "id": 1,
+      "name": "Compañía Principal",
+      "role": "admin",
+      "status": "active"
+    }
+  ]
+}</pre>
+
+    <h4>3. Logout</h4>
+    <p><b>POST /api/logout</b></p>
+    <p>Invalida el token de acceso actual.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>POST https://rutvans.com/api/logout
+Authorization: Bearer 1|XyZ123...</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Sesión cerrada correctamente"
+}</pre>
+
+    <h4>4. Validar token</h4>
+    <p><b>GET /api/validate-token</b></p>
+    <p>Verifica si un token de acceso es válido.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/validate-token
+Authorization: Bearer 1|XyZ123...</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "valid": true,
+  "message": "Token válido"
+}</pre>
+
+    <h5>Respuesta con error (HTTP 401)</h5>
+    <pre>{
+  "valid": false,
+  "message": "Token inválido o expirado"
+}</pre>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todos los endpoints excepto login requieren el header <code>Authorization: Bearer [token]</code></li>
+      <li>Los tokens tienen una duración indefinida (hasta que se haga logout)</li>
+      <li>El endpoint de login devuelve toda la información necesaria del usuario</li>
+      <li>El logout solo invalida el token usado en la petición</li>
+      <li>El token debe incluirse en todas las peticiones autenticadas</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD /admin/profile</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión del perfil del usuario autenticado. Permite ver y actualizar los datos personales y foto de perfil del usuario.</p>
+
+    <h4>1. Obtener perfil</h4>
+    <p><b>GET /admin/profile</b></p>
+    <p>Obtiene los datos del perfil del usuario autenticado.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/profile</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "id": 1,
+  "name": "Admin Ejemplo",
+  "email": "admin@example.com",
+  "address": "Calle 123, Ciudad",
+  "phone_number": "9991234567",
+  "profile_photo_url": "https://rutvans.com/storage/profile-photos/foto.jpg",
+  "profile_photo_path": "profile-photos/foto.jpg",
+  "created_at": "2023-01-01T00:00:00.000000Z",
+  "updated_at": "2023-05-01T12:00:00.000000Z"
+}</pre>
+
+    <h4>2. Actualizar perfil</h4>
+    <p><b>PUT /admin/profile</b></p>
+    <p>Actualiza los datos del perfil del usuario autenticado.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>PUT https://rutvans.com/api/admin/profile
+Content-Type: multipart/form-data
+
+{
+  "name": "Admin Actualizado",
+  "email": "admin.actualizado@example.com",
+  "address": "Nueva Calle 456",
+  "phone_number": "9997654321",
+  "profile_photo": [archivo de imagen]
+}</pre>
+
+    <h5>Parámetros:</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>name</td><td>string (max:255)</td><td>Sí</td></tr>
+      <tr><td>email</td><td>email (único)</td><td>Sí</td></tr>
+      <tr><td>address</td><td>string (max:500)</td><td>No</td></tr>
+      <tr><td>phone_number</td><td>string (max:20)</td><td>No</td></tr>
+      <tr><td>profile_photo</td><td>image (max 2MB)</td><td>No</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Perfil actualizado correctamente",
+  "user": {
+    "id": 1,
+    "name": "Admin Actualizado",
+    "email": "admin.actualizado@example.com",
+    "address": "Nueva Calle 456",
+    "phone_number": "9997654321",
+    "profile_photo_url": "https://rutvans.com/storage/profile-photos/nueva_foto.jpg",
+    "profile_photo_path": "profile-photos/nueva_foto.jpg",
+    "created_at": "2023-01-01T00:00:00.000000Z",
+    "updated_at": "2023-05-02T15:30:00.000000Z"
+  }
+}</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>401 Unauthorized:</b> No autenticado</li>
+      <li><b>403 Forbidden:</b> No tiene permisos</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>La foto de perfil se almacena en storage/public/profile-photos</li>
+      <li>Al actualizar la foto, se elimina automáticamente la anterior</li>
+      <li>El email debe ser único en el sistema</li>
+      <li>El tamaño máximo de foto es 2MB</li>
+      <li>Los campos address y phone_number son opcionales</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD /admin/drivers</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de conductores asociados a la compañía activa del usuario autenticado. Incluye listar, crear, ver, actualizar y eliminar conductores con sus datos personales, licencia y sitio asignado.</p>
+
+    <h4>1. Listar conductores</h4>
+    <p><b>GET /admin/drivers</b></p>
+    <p>Obtiene todos los conductores filtrados por la compañía activa del usuario y rol "driver".</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/drivers</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "total": 2,
+  "data": [
+    {
+      "driver_id": 1,
+      "user_id": 5,
+      "nombre": "Juan Pérez",
+      "telefono": "9991234567",
+      "email": "juan.perez@example.com",
+      "licencia": "LIC123456",
+      "foto_conductor": "https://rutvans.com/storage/drivers/foto1.jpg",
+      "site_id": 1,
+      "site": {
+        "id": 1,
+        "name": "Planta Mérida",
+        "address": "Av. 123 #456, Mérida"
+      }
+    }
+  ]
+}</pre>
+
+    <h4>2. Crear conductor</h4>
+    <p><b>POST /admin/drivers</b></p>
+    <p>Crea un nuevo conductor con usuario asociado y lo asigna a la compañía activa.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>POST https://rutvans.com/api/admin/drivers
+Content-Type: multipart/form-data
+
+{
+  "nombre": "Carlos López",
+  "licencia": "LIC789012",
+  "telefono": "9997654321",
+  "email": "carlos.lopez@example.com",
+  "password": "password123",
+  "foto_conductor": [archivo de imagen],
+  "site_id": 2
+}</pre>
+
+    <h5>Parámetros:</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>nombre</td><td>string</td><td>Sí</td></tr>
+      <tr><td>licencia</td><td>string (única)</td><td>Sí</td></tr>
+      <tr><td>telefono</td><td>string</td><td>No</td></tr>
+      <tr><td>email</td><td>email (único)</td><td>Sí</td></tr>
+      <tr><td>password</td><td>string (min 8)</td><td>Sí</td></tr>
+      <tr><td>foto_conductor</td><td>image (max 2MB)</td><td>No</td></tr>
+      <tr><td>site_id</td><td>integer</td><td>Sí</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 201)</h5>
+    <pre>{
+  "message": "Conductor creado exitosamente",
+  "driver_id": 2,
+  "user_id": 6,
+  "nombre": "Carlos López",
+  "telefono": "9997654321",
+  "email": "carlos.lopez@example.com",
+  "licencia": "LIC789012",
+  "foto_conductor": "https://rutvans.com/storage/drivers/foto2.jpg",
+  "site_id": 2
+}</pre>
+
+    <h4>3. Ver conductor</h4>
+    <p><b>GET /admin/drivers/{id}</b></p>
+    <p>Obtiene los detalles completos de un conductor específico.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/drivers/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "driver_id": 1,
+  "user_id": 5,
+  "nombre": "Juan Pérez",
+  "telefono": "9991234567",
+  "email": "juan.perez@example.com",
+  "licencia": "LIC123456",
+  "foto_conductor": "https://rutvans.com/storage/drivers/foto1.jpg",
+  "site_id": 1,
+  "site": {
+    "id": 1,
+    "name": "Planta Mérida",
+    "address": "Av. 123 #456, Mérida"
+  }
+}</pre>
+
+    <h4>4. Actualizar conductor</h4>
+    <p><b>PUT /admin/drivers/{id}</b></p>
+    <p>Actualiza los datos de un conductor existente.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>PUT https://rutvans.com/api/admin/drivers/1
+Content-Type: multipart/form-data
+
+{
+  "nombre": "Juan P. Gómez",
+  "licencia": "LIC123456A",
+  "telefono": "9991234568",
+  "email": "juan.gomez@example.com",
+  "foto_conductor": [nuevo archivo de imagen],
+  "site_id": 3
+}</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "driver_id": 1,
+  "user_id": 5,
+  "nombre": "Juan P. Gómez",
+  "telefono": "9991234568",
+  "email": "juan.gomez@example.com",
+  "licencia": "LIC123456A",
+  "foto_conductor": "https://rutvans.com/storage/drivers/nueva_foto.jpg",
+  "site_id": 3,
+  "site": {
+    "id": 3,
+    "name": "Planta Norte",
+    "address": "Calle 45 #321, Mérida"
+  }
+}</pre>
+
+    <h4>5. Eliminar conductor</h4>
+    <p><b>DELETE /admin/drivers/{id}</b></p>
+    <p>Elimina un conductor específico y su foto asociada si existe.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>DELETE https://rutvans.com/api/admin/drivers/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 204)</h5>
+    <pre>(No content)</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>400 Bad Request:</b> No se encontró compañía activa</li>
+      <li><b>401 Unauthorized:</b> No autenticado</li>
+      <li><b>403 Forbidden:</b> No tiene permisos</li>
+      <li><b>404 Not Found:</b> Conductor no encontrado</li>
+      <li><b>409 Conflict:</b> Email o licencia duplicados</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>La foto se almacena en storage/public/drivers</li>
+      <li>Al actualizar/eliminar, se maneja automáticamente la foto anterior</li>
+      <li>El site_id debe corresponder a un sitio válido</li>
+      <li>La licencia y email deben ser únicos en el sistema</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD /admin/coordinators</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de coordinadores asociados a la compañía activa del usuario autenticado. Incluye listar, crear, ver, actualizar y eliminar coordinadores.</p>
+
+    <h4>1. Listar coordinadores</h4>
+    <p><b>GET /admin/coordinators</b></p>
+    <p>Obtiene la lista de coordinadores filtrados por la compañía activa y rol "coordinator". Se puede filtrar opcionalmente por <code>site_id</code>.</p>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  [
+    {
+        "id": 1,
+        "site_id": 1,
+        "user_id": 5,
+        "employee_code": "23",
+        "photo": null,
+        "created_at": null,
+        "updated_at": "2025-08-12T18:34:08.000000Z",
+        "photo_url": null,
+        "user": {
+            "id": 5,
+            "name": "Coordinator 1",
+            "email": "coordinator1@example.com",
+            "email_verified_at": null,
+            "address": null,
+            "phone_number": null,
+            "current_team_id": null,
+            "profile_photo_path": null,
+            "created_at": "2025-08-10T19:16:21.000000Z",
+            "updated_at": "2025-08-10T19:16:21.000000Z",
+            "profile_photo_url": "https://ui-avatars.com/api/?name=C+1&color=7F9CF5&background=EBF4FF"
+        },
+        "site": {
+            "id": 1,
+            "company_id": 1,
+            "name": "Planta Mérida",
+            "route_name": "Ruta Norte",
+            "locality_id": 1,
+            "address": "Av. 123 #456, Mérida, Yucatán",
+            "phone": "9991234567",
+            "status": "active",
+            "created_at": "2025-08-10T19:28:38.000000Z",
+            "updated_at": "2025-08-10T19:28:38.000000Z"
+        }
+    },
+    {...}
+]</pre>
+
+  <h4>2. Crear coordinador</h4>
+<p><b>POST /admin/coordinators</b></p>
+<p>Crea un nuevo coordinador y su usuario asociado, asignándole la compañía activa.</p>
+
+<h5>Ejemplo de petición (form-data):</h5>
+<pre>
+{
+  "name": "Juan Pérez",
+  "email": "Juan7.perez@example.com",
+  "password": "secret123",
+  "phone_number": "5551234567",
+  "employee_code": "EMP001",
+  "site_id": 1,
+  "photo": null
+}
+
+
+</pre>
+
+<h5>Parámetros (form-data)</h5>
+<table>
+  <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+  <tr><td>name</td><td>string</td><td>Sí</td></tr>
+  <tr><td>email</td><td>string (email)</td><td>Sí</td></tr>
+  <tr><td>password</td><td>string (mínimo 6 caracteres)</td><td>Sí</td></tr>
+  <tr><td>phone_number</td><td>string</td><td>Sí</td></tr>
+  <tr><td>employee_code</td><td>string</td><td>Sí</td></tr>
+  <tr><td>photo</td><td>imagen (máx 2MB)</td><td>No</td></tr>
+  <tr><td>site_id</td><td>integer (ID de sitio existente)</td><td>Sí</td></tr>
+</table>
+
+<h5>Respuesta exitosa (HTTP 201)</h5>
+<pre>{
+  "message": "Creación exitosa"
+}
+}</pre>
+
+
+    <h4>3. Ver coordinador</h4>
+    <p><b>GET /admin/coordinators/{id}</b></p>
+    <p>Obtiene los datos de un coordinador específico por su ID, incluyendo usuario y sitio.</p>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+    "id": 7,
+    "site_id": 1,
+    "user_id": 23,
+    "employee_code": "EMP001",
+    "photo": null,
+    "created_at": "2025-08-12T21:48:15.000000Z",
+    "updated_at": "2025-08-12T21:48:15.000000Z",
+    "photo_url": null,
+    "user": {
+        "id": 23,
+        "name": "Juan Pérez",
+        "email": "Juan7.perez@example.com",
+        "email_verified_at": null,
+        "address": null,
+        "phone_number": "5551234567",
+        "current_team_id": null,
+        "profile_photo_path": null,
+        "created_at": "2025-08-12T21:48:15.000000Z",
+        "updated_at": "2025-08-12T21:48:15.000000Z",
+        "profile_photo_url": "https://ui-avatars.com/api/?name=J+P&color=7F9CF5&background=EBF4FF",
+        "roles": [
+            {
+                "id": 3,
+                "name": "coordinator",
+                "guard_name": "web",
+                "created_at": "2025-08-10T19:11:09.000000Z",
+                "updated_at": "2025-08-10T19:11:09.000000Z",
+                "pivot": {
+                    "model_type": "App\\Models\\User",
+                    "model_id": 23,
+                    "role_id": 3
+                }
+            }
+        ]
+    },
+    "site": {
+        "id": 1,
+        "company_id": 1,
+        "name": "Planta Mérida",
+        "route_name": "Ruta Norte",
+        "locality_id": 1,
+        "address": "Av. 123 #456, Mérida, Yucatán",
+        "phone": "9991234567",
+        "status": "active",
+        "created_at": "2025-08-10T19:28:38.000000Z",
+        "updated_at": "2025-08-10T19:28:38.000000Z"
+    }
+}</pre>
+
+    <h4>4. Actualizar coordinador</h4>
+    <p><b>PATCH /admin/coordinators/{id}</b></p>
+    <p>Actualiza los datos del coordinador y el usuario asociado.</p>
+<pre>
+    {
+  "name": "Juan P. Gómez",
+  "email": "juan.gomez@example.com",
+  "password": "nuevopass123",
+  "phone_number": "5559876543",
+  "employee_code": "EMP001B",
+  "site_id": 4,
+  "photo": null
+}
+
+</pre>
+    <h5>Parámetros (form-data)</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>name</td><td>string</td><td>No (opcional)</td></tr>
+      <tr><td>email</td><td>string (email)</td><td>No (opcional, debe ser único)</td></tr>
+      <tr><td>password</td><td>string (mínimo 6 caracteres)</td><td>No (opcional)</td></tr>
+      <tr><td>phone_number</td><td>string</td><td>No</td></tr>
+      <tr><td>employee_code</td><td>string</td><td>No (opcional)</td></tr>
+      <tr><td>photo</td><td>imagen (máx 2MB)</td><td>No</td></tr>
+      <tr><td>site_id</td><td>integer (ID de sitio existente)</td><td>No</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "user": {
+    "id": 19,
+    "name": "Juan Pérez",
+    "email": "juan@example.com",
+    "phone_number": "555-1234567"
+  },
+  "coordinator": {
+    "id": 7,
+    "user_id": 19,
+    "employee_code": "XYZ123",
+    "photo": null,
+    "photo_url": null,
+    "site_id": 1
+  }
+}</pre>
+
+    <h4>5. Eliminar coordinador</h4>
+    <p><b>DELETE /admin/coordinators/{id}</b></p>
+    <p>Elimina el coordinador especificado. También elimina la foto almacenada si existe.</p>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Coordinador eliminado correctamente"
+}</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>400 Bad Request:</b> Datos inválidos o faltantes en creación/actualización.</li>
+      <li><b>401 Unauthorized:</b> Token no enviado o inválido.</li>
+      <li><b>403 Forbidden:</b> Usuario no tiene permiso para la acción.</li>
+      <li><b>404 Not Found:</b> Coordinador no encontrado.</li>
+      <li><b>409 Conflict:</b> Email duplicado.</li>
+      <li><b>500 Internal Server Error:</b> Error en servidor o base de datos.</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Los endpoints requieren autenticación mediante token válido (Bearer token).</li>
+      <li>La foto es opcional y puede ser una URL o un path almacenado.</li>
+      <li>El campo <code>site_id</code> debe referenciar un sitio válido existente.</li>
+      <li>El campo <code>employee_code</code> es un identificador único para cada coordinador.</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD /admin/cashiers</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de cajeros asociados a la compañía activa del usuario autenticado. Incluye listar, crear, ver, actualizar y eliminar cajeros con sus datos personales, código de empleado y foto.</p>
+
+    <h4>1. Listar cajeros</h4>
+    <p><b>GET /admin/cashiers</b></p>
+    <p>Obtiene todos los cajeros filtrados por la compañía activa del usuario y rol "cashier".</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/cashiers</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "total": 2,
+  "data": [
+    {
+      "cashier_id": 1,
+      "user_id": 5,
+      "nombre": "María García",
+      "telefono": "9991234567",
+      "email_usuario": "maria.garcia@example.com",
+      "employee_code": "EMP001",
+      "foto": "https://rutvans.com/storage/cashiers/foto1.jpg",
+      "companies": [
+        {
+          "id": 1,
+          "name": "Compañía Principal",
+          "role": "cashier",
+          "status": "active"
+        }
+      ]
+    }
+  ]
+}</pre>
+
+    <h4>2. Crear cajero</h4>
+    <p><b>POST /admin/cashiers</b></p>
+    <p>Crea un nuevo cajero con usuario asociado y lo asigna a la compañía activa.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>POST https://rutvans.com/api/admin/cashiers
+Content-Type: multipart/form-data
+
+{
+  "nombre": "Carlos Sánchez",
+  "employee_code": "EMP002",
+  "telefono": "9997654321",
+  "email": "carlos.sanchez@example.com",
+  "password": "password123",
+  "foto_cajero": [archivo de imagen],
+  "site_id": 2
+}</pre>
+
+    <h5>Parámetros:</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>nombre</td><td>string</td><td>Sí</td></tr>
+      <tr><td>employee_code</td><td>string (único)</td><td>Sí</td></tr>
+      <tr><td>telefono</td><td>string</td><td>No</td></tr>
+      <tr><td>email</td><td>email (único)</td><td>Sí</td></tr>
+      <tr><td>password</td><td>string (min 8)</td><td>Sí</td></tr>
+      <tr><td>foto_cajero</td><td>image (max 2MB)</td><td>No</td></tr>
+      <tr><td>site_id</td><td>integer</td><td>Sí</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 201)</h5>
+    <pre>{
+  "message": "Cajero creado exitosamente",
+  "cashier": {
+    "id": 2,
+    "employee_code": "EMP002",
+    "photo": "cashiers/foto2.jpg",
+    "site_id": 2
+  },
+  "user": {
+    "id": 6,
+    "name": "Carlos Sánchez",
+    "email": "carlos.sanchez@example.com"
+  }
+}</pre>
+
+    <h4>3. Ver cajero</h4>
+    <p><b>GET /admin/cashiers/{id}</b></p>
+    <p>Obtiene los detalles completos de un cajero específico.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/cashiers/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "cashier_id": 1,
+  "nombre": "María García",
+  "telefono": "9991234567",
+  "email_usuario": "maria.garcia@example.com",
+  "employee_code": "EMP001",
+  "site_id": 1,
+  "site": {
+    "id": 1,
+    "name": "Planta Mérida",
+    "address": "Av. 123 #456, Mérida"
+  },
+  "foto": "https://rutvans.com/storage/cashiers/foto1.jpg"
+}</pre>
+
+    <h4>4. Actualizar cajero</h4>
+    <p><b>PUT /admin/cashiers/{id}</b></p>
+    <p>Actualiza los datos de un cajero existente.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>PUT https://rutvans.com/api/admin/cashiers/1
+Content-Type: multipart/form-data
+
+{
+  "nombre": "María G. López",
+  "employee_code": "EMP001A",
+  "telefono": "9991234568",
+  "email": "maria.lopez@example.com",
+  "foto_cajero": [nuevo archivo de imagen],
+  "site_id": 3
+}</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "cashier_id": 1,
+  "nombre": "María G. López",
+  "telefono": "9991234568",
+  "email_usuario": "maria.lopez@example.com",
+  "employee_code": "EMP001A",
+  "site_id": 3,
+  "foto": "https://rutvans.com/storage/cashiers/nueva_foto.jpg"
+}</pre>
+
+    <h4>5. Eliminar cajero</h4>
+    <p><b>DELETE /admin/cashiers/{id}</b></p>
+    <p>Elimina un cajero específico y su foto asociada si existe.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>DELETE https://rutvans.com/api/admin/cashiers/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 204)</h5>
+    <pre>(No content)</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>400 Bad Request:</b> No se encontró compañía activa</li>
+      <li><b>401 Unauthorized:</b> No autenticado</li>
+      <li><b>403 Forbidden:</b> No tiene permisos</li>
+      <li><b>404 Not Found:</b> Cajero no encontrado</li>
+      <li><b>409 Conflict:</b> Email o código de empleado duplicados</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>La foto se almacena en storage/public/cashiers</li>
+      <li>Al actualizar/eliminar, se maneja automáticamente la foto anterior</li>
+      <li>El site_id debe corresponder a un sitio válido</li>
+      <li>El employee_code y email deben ser únicos en el sistema</li>
+      <li>Se crea automáticamente un usuario asociado con rol 'cashier'</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD /admin/localidades</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de localidades geográficas. Incluye listar, crear, actualizar y eliminar localidades con sus coordenadas y datos de ubicación.</p>
+
+    <h4>1. Listar localidades</h4>
+    <p><b>GET /admin/localidades</b></p>
+    <p>Obtiene todas las localidades registradas en el sistema.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/localidades</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "id": 1,
+    "longitude": -89.623123,
+    "latitude": 20.967370,
+    "locality": "Centro Histórico",
+    "street": "Calle 60",
+    "postal_code": "97000",
+    "municipality": "Mérida",
+    "state": "Yucatán",
+    "country": "México",
+    "locality_type": "urbana",
+    "created_at": "2023-05-01T10:00:00.000000Z",
+    "updated_at": "2023-05-01T10:00:00.000000Z"
+  }
+]</pre>
+
+    <h4>2. Crear localidad</h4>
+    <p><b>POST /admin/localidades</b></p>
+    <p>Registra una nueva localidad en el sistema.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>POST https://rutvans.com/api/admin/localidades
+Content-Type: application/json
+
+{
+  "longitude": -89.625648,
+  "latitude": 20.975609,
+  "locality": "Gran Plaza",
+  "street": "Calle 25",
+  "postal_code": "97115",
+  "municipality": "Mérida",
+  "state": "Yucatán",
+  "country": "México",
+  "locality_type": "comercial"
+}</pre>
+
+    <h5>Parámetros:</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>longitude</td><td>numeric</td><td>Sí</td></tr>
+      <tr><td>latitude</td><td>numeric</td><td>Sí</td></tr>
+      <tr><td>locality</td><td>string (max:255)</td><td>Sí</td></tr>
+      <tr><td>street</td><td>string (max:255)</td><td>No</td></tr>
+      <tr><td>postal_code</td><td>string (max:20)</td><td>No</td></tr>
+      <tr><td>municipality</td><td>string (max:100)</td><td>No</td></tr>
+      <tr><td>state</td><td>string (max:100)</td><td>No</td></tr>
+      <tr><td>country</td><td>string (max:100)</td><td>Sí</td></tr>
+      <tr><td>locality_type</td><td>string (max:50)</td><td>No</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 201)</h5>
+    <pre>{
+  "id": 2,
+  "longitude": -89.625648,
+  "latitude": 20.975609,
+  "locality": "Gran Plaza",
+  "street": "Calle 25",
+  "postal_code": "97115",
+  "municipality": "Mérida",
+  "state": "Yucatán",
+  "country": "México",
+  "locality_type": "comercial",
+  "created_at": "2023-05-02T09:30:00.000000Z",
+  "updated_at": "2023-05-02T09:30:00.000000Z"
+}</pre>
+
+    <h4>3. Actualizar localidad</h4>
+    <p><b>PUT /admin/localidades/{id}</b></p>
+    <p>Actualiza los datos de una localidad existente.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>PUT https://rutvans.com/api/admin/localidades/1
+Content-Type: application/json
+
+{
+  "locality": "Centro Histórico Actualizado",
+  "street": "Calle 60 #500"
+}</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Localidad actualizada correctamente",
+  "data": {
+    "id": 1,
+    "longitude": -89.623123,
+    "latitude": 20.967370,
+    "locality": "Centro Histórico Actualizado",
+    "street": "Calle 60 #500",
+    "postal_code": "97000",
+    "municipality": "Mérida",
+    "state": "Yucatán",
+    "country": "México",
+    "locality_type": "urbana",
+    "created_at": "2023-05-01T10:00:00.000000Z",
+    "updated_at": "2023-05-02T11:45:00.000000Z"
+  }
+}</pre>
+
+    <h4>4. Eliminar localidad</h4>
+    <p><b>DELETE /admin/localidades/{id}</b></p>
+    <p>Elimina una localidad específica del sistema.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>DELETE https://rutvans.com/api/admin/localidades/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Localidad eliminada correctamente"
+}</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>400 Bad Request:</b> Datos de entrada inválidos</li>
+      <li><b>401 Unauthorized:</b> No autenticado</li>
+      <li><b>403 Forbidden:</b> No tiene permisos</li>
+      <li><b>404 Not Found:</b> Localidad no encontrada</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>Las coordenadas (longitude, latitude) son obligatorias</li>
+      <li>El campo 'country' es obligatorio</li>
+      <li>Al eliminar una localidad, se verifica que no esté siendo usada en rutas</li>
+      <li>Los campos string tienen límites de longitud definidos</li>
+    </ul>
+  </div>
+</details>
+
+       <details>
+  <summary>CRUD /admin/units</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de unidades vehiculares asociadas a sitios de la compañía activa del usuario autenticado. Incluye listar, crear, ver, actualizar y eliminar unidades.</p>
+
+    <h4>1. Listar unidades</h4>
+    <p><b>GET /admin/units</b></p>
+    <p>Obtiene todas las unidades vehiculares filtradas por las compañías activas del usuario.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/units</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "id": 1,
+    "plate": "ABC123",
+    "capacity": 20,
+    "photo": "units_photos/unit1.jpg",
+    "photo_url": "https://rutvans.com/storage/units_photos/unit1.jpg",
+    "site_id": 1,
+    "created_at": "2023-05-01T10:00:00.000000Z",
+    "updated_at": "2023-05-01T10:00:00.000000Z",
+    "site": {
+      "id": 1,
+      "name": "Planta Central",
+      "company_id": 1
+    }
+  }
+]</pre>
+
+    <h4>2. Crear unidad</h4>
+    <p><b>POST /admin/units</b></p>
+    <p>Crea una nueva unidad vehicular.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>POST https://rutvans.com/api/admin/units
+Headers: Content-Type: multipart/form-data
+
+{
+  "plate": "XYZ789",
+  "capacity": 15,
+  "photo": [archivo de imagen],
+  "site_id": 2
+}</pre>
+
+    <h5>Parámetros:</h5>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Requerido</th></tr>
+      <tr><td>plate</td><td>string</td><td>Sí</td></tr>
+      <tr><td>capacity</td><td>integer</td><td>Sí</td></tr>
+      <tr><td>photo</td><td>image (max 2MB)</td><td>No</td></tr>
+      <tr><td>site_id</td><td>integer</td><td>Sí</td></tr>
+    </table>
+
+    <h5>Respuesta exitosa (HTTP 201)</h5>
+    <pre>{
+  "id": 2,
+  "plate": "XYZ789",
+  "capacity": 15,
+  "photo": "units_photos/new_unit.jpg",
+  "photo_url": "https://rutvans.com/storage/units_photos/new_unit.jpg",
+  "site_id": 2,
+  "created_at": "2023-05-02T09:30:00.000000Z",
+  "updated_at": "2023-05-02T09:30:00.000000Z"
+}</pre>
+
+    <h4>3. Ver unidad</h4>
+    <p><b>GET /admin/units/{id}</b></p>
+    <p>Obtiene los detalles de una unidad específica.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/units/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "id": 1,
+  "plate": "ABC123",
+  "capacity": 20,
+  "photo": "units_photos/unit1.jpg",
+  "photo_url": "https://rutvans.com/storage/units_photos/unit1.jpg",
+  "site_id": 1,
+  "created_at": "2023-05-01T10:00:00.000000Z",
+  "updated_at": "2023-05-01T10:00:00.000000Z",
+  "site": {
+    "id": 1,
+    "name": "Planta Central",
+    "company_id": 1
+  }
+}</pre>
+
+    <h4>4. Actualizar unidad</h4>
+    <p><b>PUT /admin/units/{id}</b></p>
+    <p>Actualiza los datos de una unidad existente.</p>
+
+    <h5>Ejemplo de petición (form-data):</h5>
+    <pre>PUT https://rutvans.com/api/admin/units/1
+Headers: Content-Type: multipart/form-data
+
+{
+  "plate": "ABC124",
+  "capacity": 25,
+  "photo": [nuevo archivo de imagen],
+  "site_id": 3
+}</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "id": 1,
+  "plate": "ABC124",
+  "capacity": 25,
+  "photo": "units_photos/updated_unit.jpg",
+  "photo_url": "https://rutvans.com/storage/units_photos/updated_unit.jpg",
+  "site_id": 3,
+  "created_at": "2023-05-01T10:00:00.000000Z",
+  "updated_at": "2023-05-02T11:45:00.000000Z"
+}</pre>
+
+    <h4>5. Eliminar unidad</h4>
+    <p><b>DELETE /admin/units/{id}</b></p>
+    <p>Elimina una unidad específica.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>DELETE https://rutvans.com/api/admin/units/1</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "message": "Unidad eliminada"
+}</pre>
+
+    <h4>Errores comunes</h4>
+    <ul>
+      <li><b>400 Bad Request:</b> Datos de entrada inválidos</li>
+      <li><b>401 Unauthorized:</b> No autenticado</li>
+      <li><b>403 Forbidden:</b> No tiene permisos</li>
+      <li><b>404 Not Found:</b> Unidad no encontrada</li>
+      <li><b>422 Unprocessable Entity:</b> Validación fallida</li>
+    </ul>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>El campo 'photo' debe ser una imagen (jpg, png, etc.)</li>
+      <li>El tamaño máximo de foto es 2MB</li>
+      <li>Al actualizar foto, la anterior se elimina automáticamente</li>
+      <li>El site_id debe corresponder a un sitio válido</li>
+    </ul>
+  </div>
+</details>
+
+<details>
+  <summary>CRUD/admin/route-unit-schedules</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Permite al administrador listar todos los horarios programados para las rutas y unidades registradas en el sistema.</p>
+
+    <h4>1. Listar horarios</h4>
+    <p><b>GET /API/Admin/Route-Unit-Schedule</b></p>
+    <p>Devuelve todos los horarios con su información de ruta, unidad, fecha, hora y estado.</p>
+
+    <h5>Requisitos:</h5>
+    <ul>
+      <li>Usuario autenticado con rol <code>Administrador</code>.</li>
+      <li>Token de sesión válido en la cabecera <code>Authorization</code> o cookie de sesión activa.</li>
+    </ul>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/route-unit-schedules
+Authorization: Bearer &lt;TOKEN_ADMIN&gt;
+Accept: application/json</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "id": 1,
+    "id_route_unit": 1,
+    "schedule_date": "2025-06-20",
+    "schedule_time": "17:55:38",
+    "status": "Activo",
+    "created_at": "2025-06-10 14:30:00",
+    "updated_at": "2025-06-10 14:30:00"
+  },
+  {
+    "id": 2,
+    "id_route_unit": 2,
+    "schedule_date": "2025-06-21",
+    "schedule_time": "08:00:00",
+    "status": "Inactivo",
+    "created_at": "2025-06-10 14:30:00",
+    "updated_at": "2025-06-10 14:30:00"
+  }
+]</pre>
+
+    <h4>Parámetros opcionales</h4>
+    <p>No recibe parámetros por URL, pero puede filtrarse en el cliente según fecha, ruta o estado.</p>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Solo accesible por administradores.</li>
+      <li>Formato de fecha: <code>YYYY-MM-DD</code>.</li>
+      <li>Formato de hora: <code>HH:MM:SS</code>.</li>
+      <li>El campo <code>status</code> puede ser "Activo" o "Inactivo".</li>
+    </ul>
+  </div>
+</details>
+
+
+        <details>
+  <summary>CRUD /admin/finanzas</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Gestión completa de reportes financieros. Incluye resumen financiero, ventas detalladas, ventas por período, top rutas y balance histórico.</p>
+
+    <h4>1. Resumen financiero</h4>
+    <p><b>GET /admin/finanzas/resumen</b></p>
+    <p>Obtiene un resumen financiero con ingresos, egresos, balance, ventas por día y transacciones detalladas.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/finanzas/resumen?desde=2023-01-01&hasta=2023-12-31</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>{
+  "ingresos": 12500.50,
+  "egresos": 0,
+  "balance": 12500.50,
+  "ventasPorDia": [
+    {
+      "fecha": "2023-05-01",
+      "total": 1500.00
+    }
+  ],
+  "transacciones": [
+    {
+      "folio": 1,
+      "amount": 500.00,
+      "created_at": "2023-05-01 10:30:00"
+    }
+  ]
+}</pre>
+
+    <h4>2. Ventas detalladas</h4>
+    <p><b>GET /admin/finanzas/ventas-detalle</b></p>
+    <p>Obtiene las ventas detalladas filtradas por fecha específica.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/finanzas/ventas-detalle?fecha=2023-05-15</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "folio": 15,
+    "amount": 750.00,
+    "created_at": "2023-05-15 09:15:00"
+  }
+]</pre>
+
+    <h4>3. Ventas por período</h4>
+    <p><b>GET /admin/finanzas/ventas-periodo</b></p>
+    <p>Obtiene las ventas agrupadas por día dentro de un rango de fechas.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/finanzas/ventas-periodo?desde=2023-05-01&hasta=2023-05-31</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "fecha": "2023-05-01",
+    "total": 1500.00
+  },
+  {
+    "fecha": "2023-05-02",
+    "total": 1800.50
+  }
+]</pre>
+
+    <h4>4. Top rutas</h4>
+    <p><b>GET /admin/finanzas/top-rutas</b></p>
+    <p>Obtiene el top 5 de rutas con mayores ventas en un período.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/finanzas/top-rutas?desde=2023-01-01&hasta=2023-03-31</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "ruta": 1,
+    "total": 5000.00
+  },
+  {
+    "ruta": 2,
+    "total": 4500.50
+  }
+]</pre>
+
+    <h4>5. Balance histórico</h4>
+    <p><b>GET /admin/finanzas/balance-historico</b></p>
+    <p>Obtiene el balance histórico de ingresos agrupado por día.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/finanzas/balance-historico?desde=2023-01-01&hasta=2023-06-30</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "fecha": "2023-01-05",
+    "ingresos": 1200.00
+  },
+  {
+    "fecha": "2023-01-06",
+    "ingresos": 1500.50
+  }
+]</pre>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>Reemplaza <code>tudominio.com</code> con tu dominio real</li>
+      <li>Todas las peticiones requieren autenticación Bearer Token</li>
+      <li>Formato de fechas: YYYY-MM-DD</li>
+      <li>Los parámetros de fecha son opcionales</li>
+    </ul>
+  </div>
+</details>
+
+     <details>
+  <summary>API /admin/sites</summary>
+  <div class="content">
+    <p><b>Descripción:</b> Endpoint para obtener los sitios asociados a las compañías activas del usuario autenticado.</p>
+
+    <h4>1. Listar sitios</h4>
+    <p><b>GET /admin/sites</b></p>
+    <p>Obtiene todos los sitios que pertenecen a las compañías activas del usuario.</p>
+
+    <h5>Ejemplo de petición:</h5>
+    <pre>GET https://rutvans.com/api/admin/sites
+Authorization: Bearer [token]</pre>
+
+    <h5>Respuesta exitosa (HTTP 200)</h5>
+    <pre>[
+  {
+    "id": 1,
+    "company_id": 1,
+    "name": "Planta Principal",
+    "route_name": "Ruta Norte",
+    "locality_id": 1,
+    "address": "Av. Industrial #100",
+    "phone": "9991234567",
+    "status": "active",
+    "created_at": "2023-01-01T00:00:00.000000Z",
+    "updated_at": "2023-01-01T00:00:00.000000Z",
+    "company": {
+      "id": 1,
+      "name": "Compañía Ejemplo"
+    },
+    "locality": {
+      "id": 1,
+      "name": "Zona Industrial"
+    }
+  }
+]</pre>
+
+    <h5>Errores comunes:</h5>
+    <ul>
+      <li><b>401 Unauthorized:</b> Usuario no autenticado</li>
+      <li><b>404 Not Found:</b> No se encontró compañía activa asociada</li>
+    </ul>
+
+    <h4>Características del endpoint</h4>
+    <ul>
+      <li><b>Autenticación requerida:</b> Sí (Bearer Token)</li>
+      <li><b>Relaciones incluidas:</b> company (compañía), locality (localidad)</li>
+      <li><b>Filtrado automático:</b> Solo muestra sitios de las compañías activas del usuario</li>
+      <li><b>Ordenamiento:</b> Por defecto (generalmente por ID)</li>
+    </ul>
+
+    <h4>Estructura de datos</h4>
+    <table>
+      <tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+      <tr><td>id</td><td>integer</td><td>ID único del sitio</td></tr>
+      <tr><td>company_id</td><td>integer</td><td>ID de la compañía dueña</td></tr>
+      <tr><td>name</td><td>string</td><td>Nombre del sitio</td></tr>
+      <tr><td>route_name</td><td>string</td><td>Nombre de la ruta asociada</td></tr>
+      <tr><td>locality_id</td><td>integer</td><td>ID de la localidad</td></tr>
+      <tr><td>address</td><td>string</td><td>Dirección física</td></tr>
+      <tr><td>phone</td><td>string</td><td>Teléfono de contacto</td></tr>
+      <tr><td>status</td><td>string</td><td>Estado (active/inactive)</td></tr>
+      <tr><td>company</td><td>object</td><td>Datos de la compañía</td></tr>
+      <tr><td>locality</td><td>object</td><td>Datos de la localidad</td></tr>
+    </table>
+
+    <h4>Notas importantes</h4>
+    <ul>
+      <li>El endpoint solo devuelve sitios de compañías donde el usuario tiene estado "active"</li>
+      <li>Incluye información completa de las relaciones company y locality</li>
+      <li>Requiere autenticación válida</li>
+      <li>Si el usuario no tiene compañías activas, devuelve error 404</li>
+    </ul>
+  </div>
+</details>
+
+    </div>
+
+</body>
+
+</html>

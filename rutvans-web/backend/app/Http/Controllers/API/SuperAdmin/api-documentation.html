@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación API RutVans</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF8C00;
+            --primary-dark: #E65100;
+            --primary-light: #FFB300;
+            --accent: #FF6200;
+            --light-bg: #FFF8E1;
+            --dark-text: #333333;
+            --light-text: #666666;
+            --border: #e0e0e0;
+            --code-bg: #272822;
+            --code-text: #f8f8f2;
+            --get-color: #61affe;
+            --post-color: #49cc90;
+            --put-color: #fca130;
+            --delete-color: #f93e3e;
+            --note-bg: #fff3cd;
+            --note-border: #ffeeba;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: var(--dark-text);
+            background-color: #fafafa;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary), var(--primary-dark));
+            color: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            border: none;
+            padding: 0;
+        }
+        
+        header p {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        h1 { 
+            color: var(--light-bg); 
+            border-bottom: 2px solid var(--primary); 
+            padding-bottom: 15px; 
+            font-weight: 600;
+        }
+        
+        h2 { 
+            color: var(--dark-text); 
+            margin-top: 40px; 
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        h3 { 
+            color: var(--light-text); 
+            margin-top: 25px;
+            font-weight: 500;
+        }
+        
+        .endpoint {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+        
+        .endpoint:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .get { background: var(--get-color); color: white; }
+        .post { background: var(--post-color); color: white; }
+        .put { background: var(--put-color); color: white; }
+        .delete { background: var(--delete-color); color: white; }
+        
+        .endpoint code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.95rem;
+        }
+        
+        .response {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-top: 15px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        
+        td {
+            border-top: 1px solid var(--border);
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 140, 0, 0.03);
+        }
+        
+        .auth-note {
+            background: var(--note-bg);
+            border: 1px solid var(--note-border);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .auth-note strong {
+            color: #856404;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        p {
+            margin: 15px 0;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: var(--light-text);
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            header {
+                padding: 25px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Documentación API RutVans</h1>
+        <p>API para la gestión de empresas de transporte y servicios asociados</p>
+    </header>
+    
+    <div class="container">
+        <h2>Índice</h2>
+        <ul>
+            <li><a href="#introduccion">Introducción</a></li>
+            <li><a href="#autenticacion">Autenticación</a></li>
+            <li><a href="#endpoints">Endpoints</a></li>
+            <li><a href="#servicios">Servicios Flutter</a></li>
+            <li><a href="#controladores">Controladores</a></li>
+            <li><a href="#respuestas">Respuestas y Códigos de Estado</a></li>
+        </ul>
+
+        <div class="section">
+            <h2 id="introduccion">Introducción</h2>
+            <p>
+                La API de RutVans proporciona servicios para la gestión de empresas de transporte, incluyendo
+                administración de usuarios, empresas, quejas y métricas del sistema. La API está construida
+                sobre Laravel y sirve como backend para la aplicación móvil Flutter.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2 id="autenticacion">Autenticación</h2>
+            <div class="auth-note">
+                <strong>Nota:</strong> Todas las rutas protegidas requieren un token Bearer en el header de la petición:
+                <code>Authorization: Bearer {token}</code>
+            </div>
+            <h3>Obtener Token</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/auth/login</code>
+                <pre class="response">
+{
+    "email": "usuario@ejemplo.com",
+    "password": "contraseña"
+}</pre>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="endpoints">Endpoints</h2>
+
+            <h3>Autenticación y Usuarios</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/auth/mobile-login</code> - Iniciar sesión móvil
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/auth/mobile-register</code> - Registrar nuevo usuario móvil
+                <pre class="response">
+// Solicitud
+{
+    "name": "Usuario Ejemplo",
+    "email": "usuario@ejemplo.com",
+    "password": "contraseña"
+}
+
+// Respuesta (201 Created)
+{
+    "success": true,
+    "message": "Usuario registrado correctamente. Por favor, verifica tu correo electrónico antes de iniciar sesión."
+}</pre>
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/auth/user</code> - Obtener usuario actual
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/auth/logout</code> - Cerrar sesión
+            </div>
+
+            <h3>Perfil de Usuario</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/profile</code> - Obtener perfil
+            </div>
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <code>/api/profile</code> - Actualizar perfil
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/profile/photo</code> - Actualizar foto de perfil
+            </div>
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <code>/api/profile/password</code> - Cambiar contraseña
+            </div>
+
+            <h3>Quejas y Comentarios</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/complaints</code> - Listar quejas (público)
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/complaints</code> - Crear queja
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/complaints/user/{userId}</code> - Quejas por usuario
+            </div>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/comments</code> - Crear comentario
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/comments</code> - Listar comentarios
+            </div>
+
+            <h3>Formularios y FAQs</h3>
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <code>/api/forms</code> - Enviar formulario
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/forms</code> - Listar formularios
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/forms/user</code> - Formularios por usuario
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/faqs</code> - Listar FAQs
+            </div>
+
+            <h3>Empresas (Companies)</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/companies</code> - Listar todas las empresas
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/companies/{id}</code> - Obtener empresa específica
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/companies/stats</code> - Estadísticas de empresas
+            </div>
+
+            <h3>Admin Dashboard</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/admin/stats</code> - Estadísticas generales
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/admin/forms-monthly</code> - Formularios mensuales
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/admin/sites-count</code> - Conteo de terminales
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/admin/units-count</code> - Conteo de unidades
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/admin/dashboard</code> - Datos del dashboard
+            </div>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/complaints/monthly</code> - Quejas mensuales
+            </div>
+
+            <h3>Admin Gestión</h3>
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <code>/api/super-admin/complaints</code> - Listar todas las quejas
+            </div>
+            <div class="endpoint">
+                <span class="method put">PUT</span>
+                <code>/api/super-admin/complaints/{id}</code> - Responder/actualizar queja
+            </div>
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <code>/api/super-admin/complaints/{id}</code> - Eliminar queja
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="servicios">Servicios Flutter</h2>
+            <table>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Descripción</th>
+                    <th>Métodos Principales</th>
+                </tr>
+                <tr>
+                    <td>AdminService</td>
+                    <td>Gestiona funcionalidades administrativas</td>
+                    <td>
+                        <ul>
+                            <li>fetchUsersCount()</li>
+                            <li>fetchSitesCount()</li>
+                            <li>fetchEmpresasCount()</li>
+                            <li>fetchMonthlyComplaints()</li>
+                            <li>fetchForms()</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CompaniesService</td>
+                    <td>Gestiona operaciones relacionadas con empresas</td>
+                    <td>
+                        <ul>
+                            <li>fetchCompanies()</li>
+                            <li>fetchCompanyById(String id)</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>AuthService</td>
+                    <td>Maneja autenticación y gestión de usuarios</td>
+                    <td>
+                        <ul>
+                            <li>login(String email, String password)</li>
+                            <li>register(String name, String email, String password) - Devuelve mensaje de verificación de correo</li>
+                            <li>fetchCurrentUser(String token)</li>
+                            <li>logout()</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ProfileService</td>
+                    <td>Gestiona el perfil del usuario</td>
+                    <td>
+                        <ul>
+                            <li>editProfile(String name, String email)</li>
+                            <li>updatePassword(String currentPassword, String newPassword)</li>
+                            <li>uploadProfilePhoto(File imageFile)</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ComplaintsService</td>
+                    <td>Gestiona quejas y sugerencias</td>
+                    <td>
+                        <ul>
+                            <li>submitComplaint(String content, String userId)</li>
+                            <li>fetchComplaintsByUser(String userId)</li>
+                            <li>respondComplaint(String id, String response)</li>
+                            <li>deleteComplaint(String id)</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>CommentsService</td>
+                    <td>Gestiona comentarios públicos</td>
+                    <td>
+                        <ul>
+                            <li>fetchComentarios()</li>
+                            <li>submitComment(String content, String userId)</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>FaqsService</td>
+                    <td>Gestiona preguntas frecuentes</td>
+                    <td>
+                        <ul>
+                            <li>fetchFaqs()</li>
+                            <li>createFaq(String question, String answer)</li>
+                            <li>updateFaq(String id, String question, String answer)</li>
+                            <li>deleteFaq(String id)</li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>FormsService</td>
+                    <td>Gestiona formularios y cotizaciones</td>
+                    <td>
+                        <ul>
+                            <li>submitForm(Map&lt;String, dynamic&gt; formData)</li>
+                            <li>fetchUserForms(String userId)</li>
+                            <li>fetchAllForms()</li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2 id="controladores">Controladores Laravel</h2>
+            <table>
+                <tr>
+                    <th>Controlador</th>
+                    <th>Descripción</th>
+                    <th>Rutas Asociadas</th>
+                </tr>
+                <tr>
+                    <td>AuthController</td>
+                    <td>Maneja autenticación y registro</td>
+                    <td>/api/auth/*</td>
+                </tr>
+                <tr>
+                    <td>CompanyController</td>
+                    <td>Gestión de empresas</td>
+                    <td>/api/super-admin/companies/*</td>
+                </tr>
+                <tr>
+                    <td>AdminController</td>
+                    <td>Funciones administrativas</td>
+                    <td>/api/super-admin/admin/*</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2 id="respuestas">Respuestas y Códigos de Estado</h2>
+            <table>
+                <tr>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Ejemplo</th>
+                </tr>
+                <tr>
+                    <td>200</td>
+                    <td>Éxito</td>
+                    <td>
+                        <pre class="response">
+{
+    "success": true,
+    "data": { ... }
+}</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>401</td>
+                    <td>No autorizado</td>
+                    <td>
+                        <pre class="response">
+{
+    "message": "No autorizado. Por favor, inicie sesión nuevamente."
+}</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>404</td>
+                    <td>No encontrado</td>
+                    <td>
+                        <pre class="response">
+{
+    "message": "Recurso no encontrado"
+}</pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>500</td>
+                    <td>Error del servidor</td>
+                    <td>
+                        <pre class="response">
+{
+    "message": "Error interno del servidor"
+}</pre>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>Documentación de API RutVans - Última actualización: 11 de agosto de 2025 | 04:40 p. m. Hora central Mexico</p>
+        <p>© 2025 RutVans. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutvans Móvil - API Clientes</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #000000;
+            background-color: #f8f8f8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #000000;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            text-align: center;
+        }
+        h2 {
+            color: #000000;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        h3 {
+            color: #000000;
+            margin-top: 25px;
+        }
+        .method-section {
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        .endpoint {
+            background-color: #f8f8f8;
+            border-left: 4px solid #000000;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-right: 10px;
+            color: white;
+        }
+        .get {
+            background-color: #4CAF50;
+        }
+        .post {
+            background-color: #2196F3;
+        }
+        .put {
+            background-color: #FF9800;
+        }
+        .patch {
+            background-color: #9C27B0;
+        }
+        .delete {
+            background-color: #F44336;
+        }
+        code {
+            background-color: #eeeeee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #000000;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: #ffffff;
+        }
+        th {
+            background-color: #eeeeee;
+            color: #000000;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 12px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+        .response-example {
+            background-color: #eeeeee;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .url-example {
+            background-color: #e1f5fe;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .url-placeholder {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Rutvans Móvil - API Perfil Clientes</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Introducción</h2>
+        <p>Esta documentación describe las rutas disponibles en la API de Rutvans Móvil para el perfil de clientes, incluyendo parámetros, ejemplos de solicitud y respuesta.</p>
+
+        <h2>URL Base</h2>
+        <div class="url-example">
+            https://rutvans.com/api
+        </div>
+
+        <h2>Autenticación</h2>
+        <p>La mayoría de los endpoints requieren autenticación mediante token JWT. Incluya el token en el encabezado de la solicitud:</p>
+        <pre>Authorization: Bearer {token}</pre>
+        <p>Para obtener un token, utilice el endpoint <code>/login</code>.</p>
+
+        <!-- Sección GET -->
+        <div class="method-section">
+            <h2>Métodos GET</h2>
+
+            <!-- Endpoint GET /user -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/user</code></h3>
+                <p>Obtiene la información del usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/user
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "Juan Pérez",
+        "email": "juan@example.com",
+        "phone": "5551234567",
+        "photo_url": "https://...",
+        "created_at": "2023-01-15T10:30:00.000000Z"
+    }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /users -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/users</code></h3>
+                <p>Obtiene un listado de todos los usuarios (requiere permisos de administrador).</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/users
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "name": "Juan Pérez",
+            "email": "juan@example.com"
+        },
+        {
+            "id": 2,
+            "name": "María García",
+            "email": "maria@example.com"
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /recent-trips -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/recent-trips</code></h3>
+                <p>Obtiene el historial de viajes recientes del usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/recent-trips
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "route": "Ciudad A - Ciudad B",
+            "date": "2023-05-15",
+            "unit": "UN-001",
+            "rating": 4
+        },
+        {
+            "id": 2,
+            "route": "Ciudad B - Ciudad C",
+            "date": "2023-05-10",
+            "unit": "UN-002",
+            "rating": 5
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /route-unit-schedules -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/route-unit-schedules</code></h3>
+                <p>Obtiene el listado de rutas, unidades y horarios disponibles.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/route-unit-schedules
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "route_id": 1,
+            "route_name": "Ciudad A - Ciudad B",
+            "unit_id": 1,
+            "unit_name": "UN-001",
+            "schedule": "08:00 - 10:00",
+            "available_seats": 15
+        },
+        {
+            "route_id": 2,
+            "route_name": "Ciudad A - Ciudad C",
+            "unit_id": 2,
+            "unit_name": "UN-002",
+            "schedule": "10:00 - 12:00",
+            "available_seats": 20
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /sales/recent -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/sales/recent</code></h3>
+                <p>Obtiene las ventas recientes (boletos) del usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/sales/recent
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "ticket_number": "TKT-001",
+            "route": "Ciudad A - Ciudad B",
+            "date": "2023-05-15",
+            "price": 150.00,
+            "status": "confirmed"
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /units/{unit} -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/units/<span class="url-placeholder">{unit}</span></code></h3>
+                <p>Obtiene información detallada de una unidad específica.</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/units/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>unit</td>
+                        <td>integer</td>
+                        <td>ID de la unidad a consultar (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": {
+        "id": 1,
+        "name": "UN-001",
+        "model": "Mercedes Sprinter",
+        "capacity": 20,
+        "status": "active"
+    }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /units/{unit}/occupied-seats -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/units/<span class="url-placeholder">{unit}</span>/occupied-seats</code></h3>
+                <p>Obtiene los asientos ocupados para una unidad en un viaje específico.</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/units/<span class="url-placeholder">1</span>/occupied-seats?trip_date=2023-05-15
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>unit</td>
+                        <td>integer</td>
+                        <td>ID de la unidad (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                    <tr>
+                        <td>trip_date (query)</td>
+                        <td>string</td>
+                        <td>Fecha del viaje en formato YYYY-MM-DD</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": {
+        "occupied_seats": [1, 5, 7, 12],
+        "total_occupied": 4,
+        "available_seats": 16
+    }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /rates -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/rates</code></h3>
+                <p>Obtiene el listado de tarifas disponibles.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/rates
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "route": "Ciudad A - Ciudad B",
+            "price": 150.00,
+            "currency": "MXN"
+        },
+        {
+            "id": 2,
+            "route": "Ciudad A - Ciudad C",
+            "price": 200.00,
+            "currency": "MXN"
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /rates/{id} -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/rates/<span class="url-placeholder">{id}</span></code></h3>
+                <p>Obtiene información detallada de una tarifa específica.</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/rates/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>integer</td>
+                        <td>ID de la tarifa a consultar (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": {
+        "id": 1,
+        "route": "Ciudad A - Ciudad B",
+        "price": 150.00,
+        "currency": "MXN",
+        "description": "Tarifa regular",
+        "valid_from": "2023-01-01",
+        "valid_to": "2023-12-31"
+    }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /payments -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/payments</code></h3>
+                <p>Obtiene el historial de pagos del usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/payments
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "amount": 150.00,
+            "currency": "MXN",
+            "payment_date": "2023-05-15",
+            "status": "completed",
+            "ticket_number": "TKT-001"
+        }
+    ]
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint GET /ping -->
+            <div class="endpoint">
+                <h3><span class="method get">GET</span> <code>/ping</code></h3>
+                <p>Verifica el estado de la API.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/ping
+                </div>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "status": "ok",
+    "message": "API funcionando en Laravel 12 con api.php 🧠🔥"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección POST -->
+        <div class="method-section">
+            <h2>Métodos POST</h2>
+
+            <!-- Endpoint POST /shipment -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/shipment</code></h3>
+                <p>Crea un nuevo envío o paquetería.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/shipment
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>origin</td>
+                        <td>string</td>
+                        <td>Ciudad de origen (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>destination</td>
+                        <td>string</td>
+                        <td>Ciudad de destino (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>description</td>
+                        <td>string</td>
+                        <td>Descripción del paquete</td>
+                    </tr>
+                    <tr>
+                        <td>weight</td>
+                        <td>number</td>
+                        <td>Peso en kg (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>dimensions</td>
+                        <td>string</td>
+                        <td>Dimensiones (LxAxH en cm)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Envío creado exitosamente",
+    "shipment_id": 1,
+    "tracking_number": "RTV-001"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /users -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/users</code></h3>
+                <p>Registra un nuevo usuario en el sistema.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/users
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td>Nombre completo (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>string</td>
+                        <td>Correo electrónico (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>string</td>
+                        <td>Contraseña (requerido, mínimo 8 caracteres)</td>
+                    </tr>
+                    <tr>
+                        <td>phone</td>
+                        <td>string</td>
+                        <td>Número de teléfono</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Usuario registrado exitosamente",
+    "user_id": 3,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /user/upload-photo -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/user/upload-photo</code></h3>
+                <p>Sube una foto de perfil para el usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/user/upload-photo
+                </div>
+                
+                <h4>Parámetros (form-data)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>photo</td>
+                        <td>file</td>
+                        <td>Archivo de imagen (jpg, png, max 2MB)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Foto de perfil actualizada",
+    "photo_url": "https://rutvans.com/storage/users/1/profile.jpg"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /login -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/login</code></h3>
+                <p>Autentica a un usuario y genera un token JWT.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/login
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>string</td>
+                        <td>Correo electrónico (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>string</td>
+                        <td>Contraseña (requerido)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+        "id": 1,
+        "name": "Juan Pérez",
+        "email": "juan@example.com"
+    }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /sales -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/sales</code></h3>
+                <p>Crea una nueva venta (boleto de viaje).</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/sales
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>route_id</td>
+                        <td>integer</td>
+                        <td>ID de la ruta (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>unit_id</td>
+                        <td>integer</td>
+                        <td>ID de la unidad (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>travel_date</td>
+                        <td>string</td>
+                        <td>Fecha del viaje en formato YYYY-MM-DD (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>seat_number</td>
+                        <td>integer</td>
+                        <td>Número de asiento (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>passenger_name</td>
+                        <td>string</td>
+                        <td>Nombre del pasajero (requerido)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Boleto generado exitosamente",
+    "ticket_number": "RTV-20230515-001",
+    "amount": 150.00
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /rates -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/rates</code></h3>
+                <p>Crea una nueva tarifa (requiere permisos de administrador).</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/rates
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>route_id</td>
+                        <td>integer</td>
+                        <td>ID de la ruta (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>price</td>
+                        <td>number</td>
+                        <td>Precio (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>currency</td>
+                        <td>string</td>
+                        <td>Moneda (MXN, USD, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>valid_from</td>
+                        <td>string</td>
+                        <td>Fecha de inicio de vigencia (YYYY-MM-DD)</td>
+                    </tr>
+                    <tr>
+                        <td>valid_to</td>
+                        <td>string</td>
+                        <td>Fecha de fin de vigencia (YYYY-MM-DD)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Tarifa creada exitosamente",
+    "rate_id": 3
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /reservations -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/reservations</code></h3>
+                <p>Crea una nueva reservación.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/reservations
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>route_id</td>
+                        <td>integer</td>
+                        <td>ID de la ruta (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>unit_id</td>
+                        <td>integer</td>
+                        <td>ID de la unidad (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>travel_date</td>
+                        <td>string</td>
+                        <td>Fecha del viaje (YYYY-MM-DD) (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>seat_number</td>
+                        <td>integer</td>
+                        <td>Número de asiento (requerido)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Reservación creada exitosamente",
+    "reservation_id": 1,
+    "expires_at": "2023-05-16 15:30:00"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint POST /payments -->
+            <div class="endpoint">
+                <h3><span class="method post">POST</span> <code>/payments</code></h3>
+                <p>Procesa un pago para una reservación o boleto.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/payments
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>reservation_id</td>
+                        <td>integer</td>
+                        <td>ID de la reservación (opcional si se proporciona ticket_number)</td>
+                    </tr>
+                    <tr>
+                        <td>ticket_number</td>
+                        <td>string</td>
+                        <td>Número de boleto (opcional si se proporciona reservation_id)</td>
+                    </tr>
+                    <tr>
+                        <td>amount</td>
+                        <td>number</td>
+                        <td>Monto del pago (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>payment_method</td>
+                        <td>string</td>
+                        <td>Método de pago (cash, card, transfer) (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>payment_details</td>
+                        <td>object</td>
+                        <td>Detalles específicos del método de pago</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Pago procesado exitosamente",
+    "payment_id": 1,
+    "ticket_number": "RTV-20230515-001",
+    "status": "completed"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección PATCH -->
+        <div class="method-section">
+            <h2>Métodos PATCH</h2>
+
+            <!-- Endpoint PATCH /user -->
+            <div class="endpoint">
+                <h3><span class="method patch">PATCH</span> <code>/user</code></h3>
+                <p>Actualiza la información del usuario autenticado.</p>
+                
+                <h4>URL Completa</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/user
+                </div>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>name</td>
+                        <td>string</td>
+                        <td>Nuevo nombre</td>
+                    </tr>
+                    <tr>
+                        <td>email</td>
+                        <td>string</td>
+                        <td>Nuevo correo electrónico</td>
+                    </tr>
+                    <tr>
+                        <td>phone</td>
+                        <td>string</td>
+                        <td>Nuevo número de teléfono</td>
+                    </tr>
+                    <tr>
+                        <td>password</td>
+                        <td>string</td>
+                        <td>Nueva contraseña</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Información de usuario actualizada"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint PATCH /travel-history/{id} -->
+            <div class="endpoint">
+                <h3><span class="method patch">PATCH</span> <code>/travel-history/<span class="url-placeholder">{id}</span></code></h3>
+                <p>Actualiza la calificación de un viaje en el historial.</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/travel-history/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>integer</td>
+                        <td>ID del registro en el historial de viajes (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>rating</td>
+                        <td>integer</td>
+                        <td>Calificación (1-5) (requerido)</td>
+                    </tr>
+                    <tr>
+                        <td>comments</td>
+                        <td>string</td>
+                        <td>Comentarios sobre el viaje</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Calificación actualizada"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección PUT -->
+        <div class="method-section">
+            <h2>Métodos PUT</h2>
+
+            <!-- Endpoint PUT /rates/{id} -->
+            <div class="endpoint">
+                <h3><span class="method put">PUT</span> <code>/rates/<span class="url-placeholder">{id}</span></code></h3>
+                <p>Actualiza una tarifa existente (requiere permisos de administrador).</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/rates/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>integer</td>
+                        <td>ID de la tarifa a actualizar (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Parámetros (body)</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>price</td>
+                        <td>number</td>
+                        <td>Nuevo precio</td>
+                    </tr>
+                    <tr>
+                        <td>currency</td>
+                        <td>string</td>
+                        <td>Nueva moneda</td>
+                    </tr>
+                    <tr>
+                        <td>valid_from</td>
+                        <td>string</td>
+                        <td>Nueva fecha de inicio de vigencia</td>
+                    </tr>
+                    <tr>
+                        <td>valid_to</td>
+                        <td>string</td>
+                        <td>Nueva fecha de fin de vigencia</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Tarifa actualizada"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección DELETE -->
+        <div class="method-section">
+            <h2>Métodos DELETE</h2>
+
+            <!-- Endpoint DELETE /rates/{id} -->
+            <div class="endpoint">
+                <h3><span class="method delete">DELETE</span> <code>/rates/<span class="url-placeholder">{id}</span></code></h3>
+                <p>Elimina una tarifa (requiere permisos de administrador).</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/rates/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>integer</td>
+                        <td>ID de la tarifa a eliminar (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Tarifa eliminada"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Endpoint DELETE /reservations/{id} -->
+            <div class="endpoint">
+                <h3><span class="method delete">DELETE</span> <code>/reservations/<span class="url-placeholder">{id}</span></code></h3>
+                <p>Cancela una reservación existente.</p>
+                
+                <h4>URL Completa (Ejemplo)</h4>
+                <div class="url-example">
+                    https://rutvans.com/api/reservations/<span class="url-placeholder">1</span>
+                </div>
+                
+                <h4>Parámetros</h4>
+                <table>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td>id</td>
+                        <td>integer</td>
+                        <td>ID de la reservación a cancelar (ejemplo: 1, 2, 3)</td>
+                    </tr>
+                </table>
+                
+                <h4>Respuesta exitosa</h4>
+                <div class="response-example">
+                    <pre>{
+    "success": true,
+    "message": "Reservación cancelada"
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <h2>Códigos de estado HTTP</h2>
+        <table>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+            </tr>
+            <tr>
+                <td>200 OK</td>
+                <td>Solicitud exitosa</td>
+            </tr>
+            <tr>
+                <td>201 Created</td>
+                <td>Recurso creado exitosamente</td>
+            </tr>
+            <tr>
+                <td>400 Bad Request</td>
+                <td>Solicitud incorrecta (faltan parámetros o son inválidos)</td>
+            </tr>
+            <tr>
+                <td>401 Unauthorized</td>
+                <td>No autenticado (token inválido o no proporcionado)</td>
+            </tr>
+            <tr>
+                <td>403 Forbidden</td>
+                <td>No tiene permisos para realizar esta acción</td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>Recurso no encontrado</td>
+            </tr>
+            <tr>
+                <td>422 Unprocessable Entity</td>
+                <td>Error de validación en los datos enviados</td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>Error interno del servidor</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
